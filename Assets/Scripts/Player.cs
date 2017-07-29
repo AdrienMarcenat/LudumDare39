@@ -5,8 +5,6 @@ using System.Collections;
 
 public class Player : MovingObject
 {
-	public float totalHealth;
-
 	public AudioClip reloadSound;
 	public AudioClip damageSound;
 	public AudioClip healSound;
@@ -19,8 +17,7 @@ public class Player : MovingObject
 	public Text ammoText;
 	public Image weaponThumbnail;
 
-	private Animator animator;
-	private float currentHealth;
+
 	private Enemy currentTarget;
 	private Weapon currentWeapon;
 	private int currentWeaponIndex;
@@ -143,7 +140,7 @@ public class Player : MovingObject
 			GameManager.instance.GameOver ();
 	}
 
-	public void LoseHealth(float damage)
+	public override void LoseHealth(float damage)
 	{
 		SoundManager.instance.PlayMultiple (damageSound);
 		currentHealth = Mathf.Max(0, currentHealth - damage);

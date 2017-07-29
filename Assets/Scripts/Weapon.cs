@@ -13,6 +13,7 @@ public class Weapon : MonoBehaviour
 	public float knockBack;
 	public int type;
 	public string name;
+	public string targetTag;
 
 	public Sprite thumbnail;
 	public Sprite topDownSprite;
@@ -42,10 +43,10 @@ public class Weapon : MonoBehaviour
 		fireDelay += Time.deltaTime;
 	}
 
-	public void Fire(Vector3 direction)
+	public bool Fire(Vector3 direction)
 	{
 		if (currentAmmo == 0 || fireDelay < fireRate)
-			return;
+			return false;
 
 		fireDelay = 0;
 		SetAmmo (-1);
@@ -59,6 +60,9 @@ public class Weapon : MonoBehaviour
 		bulletScript.damage = damage;
 		bulletScript.range = range;
 		bulletScript.weaponType = type;
+		bulletScript.targetTag = targetTag;
+
+		return true;
 	}
 
 	public void Reload()

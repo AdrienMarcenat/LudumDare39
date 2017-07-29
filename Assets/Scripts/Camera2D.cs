@@ -9,13 +9,11 @@ public class Camera2D : MonoBehaviour
 	public float zoomFactor = 1.0f;
 	public float zoomSpeed = 5.0f;
 
-	private float originalSize = 0f;
 	private Camera camera;
 
 	void Start()
 	{
 		camera = GetComponent<Camera>();
-		originalSize = camera.orthographicSize;
 	}
 
 	void Update()

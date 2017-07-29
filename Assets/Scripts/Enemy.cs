@@ -5,14 +5,13 @@ using System.Collections;
 public class Enemy : MovingObject
 {
 	public float playerDamage;
-	public float totalHealth;
 	public Transform healthBar;
 	public int type;
 	public bool isSeeking;
 
-	private Animator animator;
-	private Transform target;
-	private float currentHealth;
+	protected Animator animator;
+	protected Transform target;
+	protected float currentHealth;
 
 	protected override void Start ()
 	{
@@ -24,20 +23,6 @@ public class Enemy : MovingObject
 
 		base.Start ();
 	}
-		
-	void Update()
-	{
-		if (isSeeking)
-			MoveEnemy ();
-	}
-
-	public void MoveEnemy ()
-	{
-		float horizontal = target.transform.position.x - transform.position.x;
-		float vertical = target.transform.position.y - transform.position.y;
-
-		Move (horizontal, vertical);
-	}
 
 	private void CheckIfGameOver ()
 	{
@@ -45,11 +30,11 @@ public class Enemy : MovingObject
 		{
 			GameManager.instance.RemoveEnemyFromList (this);
 			animator.SetTrigger ("isDying");
-			Destroy (gameObject, 1); // TO DO : animation and item drop
+			Destroy (gameObject, 1);
 		}
 	}
 
-	public void LoseHealth(float damage)
+	public override void LoseHealth(float damage)
 	{
 		Seek ();
 		currentHealth = Mathf.Max(0, currentHealth - damage);
