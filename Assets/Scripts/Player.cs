@@ -5,24 +5,28 @@ using System.Collections;
 
 public class Player : MovingObject
 {
-	public int totalHealth;
+	public float totalHealth;
 
 	public AudioClip reloadSound;
 	public AudioClip attackSound;
 	public AudioClip damageSound;
 
 	public Vector3 WeaponThumbnailPosition;
+	public float invulnerabiltyFrames;
 
 	public Text healthText;
 	public Text ammoText;
 	public Text damageText;
 
 	private Animator animator;
-	private int currentHealth;
+	private float currentHealth;
 	private Enemy currentTarget;
 	private Weapon currentWeapon;
+	private int currentWeaponIndex;
 	private List<Weapon> weapons;
 	private LayerMask blockingLayer;
+
+	private float invulnerabiltyFramesDelay;
 
 	protected override void Start ()
 	{
@@ -55,8 +59,25 @@ public class Player : MovingObject
 
 		if (Input.GetButton ("Fire"))
 			Fire ();
+
+		if (Input.GetButtonDown ("SwitchGun"))
+			SwitchGun ();
+		
+		if(invulnerabiltyFramesDelay > 0)
+			invulnerabiltyFramesDelay -= Time.deltaTime;
+
+		UpdateTexts ();
 	}
 		
+	private void SwitchGun()
+	{
+		// Sound
+		currentWeaponIndex++;
+		if (currentWeaponIndex >= weapons.Count)
+			currentWeaponIndex = 0;
+		currentWeapon = weapons [currentWeaponIndex];
+	}
+
 	private void Fire()
 	{
 		currentWeapon.Fire(Camera.main.ScreenToWorldPoint(Input.mousePosition), transform.position);
@@ -68,9 +89,8 @@ public class Player : MovingObject
 			GameManager.instance.ChangeLevel ();
 		else if (other.tag == "Ammo") 
 		{
-			currentWeapon.SetAmmo (4);
+			currentWeapon.SetAmmo (currentWeapon.totalAmmo);
 			SoundManager.instance.PlayMultiple (reloadSound);
-			UpdateTexts ();
 			Destroy (other.gameObject);
 		} 
 		else if (other.tag == "Weapon") 
@@ -80,25 +100,27 @@ public class Player : MovingObject
 			currentWeapon = newWeapon;
 			currentWeapon.transform.position = WeaponThumbnailPosition;
 			// Gun taken sound
-			UpdateTexts ();
-			Destroy (other.gameObject);
 		} 
-		else if (other.tag == "Enemy")
-			LoseHealth (other.GetComponent<Enemy>().playerDamage);
+	}
+
+	private void OnCollisionStay2D (Collision2D other)
+	{
+		if (other.gameObject.tag == "Enemy" && invulnerabiltyFramesDelay <= 0)
+			LoseHealth (other.gameObject.GetComponent<Enemy>().playerDamage);
 	}
 		
 	private void CheckIfGameOver ()
 	{
-		if (currentHealth == 0) 
+		if (currentHealth <= 0) 
 			GameManager.instance.GameOver ();
 	}
 
-	public void LoseHealth(int damage)
+	public void LoseHealth(float damage)
 	{
 		SoundManager.instance.PlayMultiple (damageSound);
 		currentHealth = Mathf.Max(0, currentHealth - damage);
-		UpdateTexts ();
 		CheckIfGameOver ();
+		invulnerabiltyFramesDelay = invulnerabiltyFrames;
 	}
 
 	private void UpdateTexts()

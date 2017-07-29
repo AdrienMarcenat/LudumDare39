@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-	public int range = 1;
-	public int damage = 1;
+	public float range = 1;
+	public float damage = 1;
 	public int totalAmmo = int.MaxValue;
 	public int currentAmmo;
 	public float ammoVelocity;
 	public float fireRate;
 	public float knockBack;
+	public int type;
 
 	public GameObject bulletPrefab;
 
@@ -43,11 +44,14 @@ public class Weapon : MonoBehaviour
 
 		fireDelay = 0;
 		SetAmmo (-1);
+		// Sound
 
 		GameObject bullet = Instantiate (bulletPrefab);
 		bullet.transform.position = position;
+		direction.z = 0;
 		bullet.GetComponent<Rigidbody2D> ().velocity = ammoVelocity*((direction - position).normalized);
 		Bullet bulletScript = bullet.AddComponent<Bullet> ();
 		bulletScript.damage = damage;
+		bulletScript.weaponType = type;
 	}
 }

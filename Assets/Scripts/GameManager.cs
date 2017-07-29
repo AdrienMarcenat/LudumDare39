@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
 	public bool playerTurn = false;
 	public float turnDelay;
 
+	public int enemyTypeNumber;
+	public int weaponTypeNumber;
+
 	private List<Enemy> enemyList;
 	private bool enemiesMoving = false;
 	private List<List<int>> enemyWeaponMatching;
@@ -23,6 +26,12 @@ public class GameManager : MonoBehaviour
 
 		DontDestroyOnLoad (gameObject);
 		enemyList = new List<Enemy> ();
+		List<int> dummy = new List<int> ();
+		for(int i = 0; i < weaponTypeNumber; i++)
+			dummy.Add(1);
+		enemyWeaponMatching = new List<List<int>> ();
+		for(int i = 0; i < enemyTypeNumber; i++)
+			enemyWeaponMatching.Add(dummy);
 	}
 
 	void Update()
@@ -57,5 +66,10 @@ public class GameManager : MonoBehaviour
 	public void UpdateMatching(int enemyType, int weapon)
 	{
 		enemyWeaponMatching [enemyType] [weapon]++;
+	}
+
+	public float GetMatching(int enemyType, int weapon)
+	{
+		return Mathf.Min (1, 5.0f / enemyWeaponMatching [enemyType] [weapon]);
 	}
 }

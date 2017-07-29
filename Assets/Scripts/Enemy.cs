@@ -4,15 +4,15 @@ using System.Collections;
 
 public class Enemy : MovingObject
 {
-	public int playerDamage;
-	public int totalHealth;
+	public float playerDamage;
+	public float totalHealth;
 	public Transform healthBar;
 	public int type;
 	public bool isSeeking;
 
 	private Animator animator;
 	private Transform target;
-	private int currentHealth;
+	private float currentHealth;
 
 	protected override void Start ()
 	{
@@ -41,17 +41,17 @@ public class Enemy : MovingObject
 
 	private void CheckIfGameOver ()
 	{
-		if (currentHealth == 0)
+		if (currentHealth <= 0)
 		{
 			GameManager.instance.RemoveEnemyFromList (this);
 			Destroy (gameObject); // TO DO : animation and item drop
 		}
 	}
 
-	public void LoseHealth(int damage)
+	public void LoseHealth(float damage)
 	{
 		currentHealth = Mathf.Max(0, currentHealth - damage);
-		healthBar.localScale = new Vector3 (((float)currentHealth) / totalHealth, healthBar.localScale.y, 1);
+		healthBar.localScale = new Vector3 (currentHealth / totalHealth, healthBar.localScale.y, 1);
 		CheckIfGameOver ();
 	}
 }

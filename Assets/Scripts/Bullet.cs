@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour 
 {
-	public int damage;
+	public float damage;
+	public int weaponType;
 
 	private void OnTriggerEnter2D (Collider2D other)
 	{
 		if (other.tag == "Enemy") 
 		{
 			Enemy hitEnemy = other.GetComponent<Enemy> ();
-			hitEnemy.LoseHealth (damage);
+			float damageModifier = GameManager.instance.GetMatching (hitEnemy.type, weaponType);
+			hitEnemy.LoseHealth (damage * damageModifier);
+			GameManager.instance.UpdateMatching (hitEnemy.type, weaponType);
 			Destroy (gameObject);
 		}
-		else if(other.tag == "wall")
+		else if(other.tag == "Wall")
 			Destroy (gameObject);
 	}
 }
