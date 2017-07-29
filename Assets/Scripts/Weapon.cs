@@ -20,7 +20,7 @@ public class Weapon : MonoBehaviour
 
 	private float fireDelay;
 
-	void OnEnable()
+	void Start()
 	{
 		currentAmmo = totalAmmo;
 		fireDelay = fireRate;

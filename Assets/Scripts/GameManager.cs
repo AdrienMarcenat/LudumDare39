@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
 	public int weaponTypeNumber;
 
 	private List<Enemy> enemyList;
-	private bool enemiesMoving = false;
 	private List<List<int>> enemyWeaponMatching;
 
 	void Awake () 
@@ -48,7 +47,6 @@ public class GameManager : MonoBehaviour
 	public void ChangeLevel()
 	{
 		enemyList.Clear ();
-		enemiesMoving = false;
 		level++;
 		SceneManager.LoadScene (level);
 	}

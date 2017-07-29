@@ -39,16 +39,6 @@ public class Player : MovingObject
 
 		base.Start ();
 	}
-		
-	private void OnDisable ()
-	{
-		
-	}
-
-	private void OnEnable ()
-	{
-		
-	}
 
 	private void Update ()
 	{
