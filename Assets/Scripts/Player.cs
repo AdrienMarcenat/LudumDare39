@@ -12,6 +12,7 @@ public class Player : MovingObject
 	public AudioClip healSound;
 
 	public Vector3 weaponPosition;
+	public Vector3 weaponRotation;
 	public float invulnerabiltyFrames;
 
 	public Image healthBar;
@@ -122,8 +123,10 @@ public class Player : MovingObject
 				weapons.Add (newWeapon);
 				newWeapon.transform.SetParent (transform, false);
 				newWeapon.transform.localPosition = weaponPosition;
-				SwitchGun ();
+				newWeapon.transform.localRotation = Quaternion.Euler (weaponRotation);
+				newWeapon.GetComponent<Weapon> ().SwitchSprite ();
 				newWeapon.GetComponent<BoxCollider2D> ().enabled = false;
+				SwitchGun ();
 			}
 		} 
 	}

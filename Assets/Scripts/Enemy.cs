@@ -44,7 +44,8 @@ public class Enemy : MovingObject
 		if (currentHealth <= 0)
 		{
 			GameManager.instance.RemoveEnemyFromList (this);
-			Destroy (gameObject); // TO DO : animation and item drop
+			animator.SetTrigger ("isDying");
+			Destroy (gameObject, 1); // TO DO : animation and item drop
 		}
 	}
 
@@ -61,5 +62,7 @@ public class Enemy : MovingObject
 		//if(!isSeeking)
 			// sound;
 		isSeeking = true;
+		animator.SetTrigger ("isSeeking");
+		healthBar.gameObject.SetActive (true);
 	}
 }

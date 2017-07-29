@@ -13,7 +13,9 @@ public class Weapon : MonoBehaviour
 	public float knockBack;
 	public int type;
 	public string name;
+
 	public Sprite thumbnail;
+	public Sprite topDownSprite;
 
 	public GameObject bulletPrefab;
 	public AudioClip fireSound;
@@ -61,5 +63,10 @@ public class Weapon : MonoBehaviour
 	public void Reload()
 	{
 		currentAmmo = totalAmmo;
+	}
+
+	public void SwitchSprite()
+	{
+		GetComponent<SpriteRenderer> ().sprite = topDownSprite;
 	}
 }
