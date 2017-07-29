@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.SceneManagement;      
+using System.Collections;    
 
 public class Player : MovingObject
 {
@@ -33,48 +32,52 @@ public class Player : MovingObject
 			vertical = 0;
 			
 		if(horizontal != 0 || vertical != 0)
-			AttemptMove<Wall> (horizontal, vertical); // TO DO : wall class
+			AttemptMove<Enemy> (horizontal, vertical); // TO DO : Enemy class
 	}
 
 	protected override void AttemptMove <T> (int xDir, int yDir)
 	{
-		base.AttemptMove <T> (xDir, yDir);
-
 		RaycastHit2D hit;
+		bool canMove = Move (xDir, yDir, out hit);
 
-		if (Move (xDir, yDir, out hit)) 
+		if(canMove)
 		{
 			// TO DO : audio
+			return;
 		}
-			
-		CheckIfGameOver ();
+
+		T hitComponent = hit.transform.GetComponent <T> ();
+
+		if(hitComponent != null)
+			OnCantMove (hitComponent);
 	}
 		
 	protected override void OnCantMove <T> (T component)
 	{
-		
+		Enemy hitEnemy = component as Enemy;
+		hitEnemy.LoseHealth (currentDamage);
+		animator.SetTrigger ("playerAttack");
 	}
 		
 	private void OnTriggerEnter2D (Collider2D other)
 	{
 		if(other.tag == "Exit")
-			ChangeLevel();
+			GameManager.instance.ChangeLevel ();
 		else if(other.tag == "stuff")
 		{
 			// TO DO : item
 		}
 	}
 		
-	private void ChangeLevel ()
-	{
-		SceneManager.LoadScene (0);
-	}
-		
 	private void CheckIfGameOver ()
 	{
-		if (currentHealth <= 0) 
-		{
-			GameManager.instance.GameOver (); // TO DO : GameManager class
-		}
+		if (currentHealth == 0) 
+			GameManager.instance.GameOver ();
+	}
+
+	public void LoseHealth(int damage)
+	{
+		currentHealth = Mathf.Max(0, currentHealth - damage);
+		CheckIfGameOver ();
 	}
 }
