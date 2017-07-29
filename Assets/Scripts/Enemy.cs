@@ -8,12 +8,13 @@ public class Enemy : MovingObject
 	public int totalHealth;
 	public int attackDelay;
 	public bool attackNextMove = false;
+	public int moveDelay;
 
 	private int currentAttackDelay;
 	private int currentHealth;
+	private int currentMoveDelay;
 	private Animator animator;
 	private Transform target;
-	private bool skipMove;
 
 	protected override void Start ()
 	{
@@ -28,11 +29,11 @@ public class Enemy : MovingObject
 
 	protected override void AttemptMove <T> (int xDir, int yDir)
 	{
-		if(skipMove)
-		{
-			skipMove = false;
+		currentMoveDelay++;
+		if (currentMoveDelay >= moveDelay)
+			currentMoveDelay = 0;
+		else
 			return;
-		}
 
 		base.AttemptMove <T> (xDir, yDir);
 
@@ -45,8 +46,6 @@ public class Enemy : MovingObject
 		else
 			attackNextMove = false;
 		animator.SetBool ("enemyAttackNextMove", attackNextMove);
-
-		skipMove = true;
 	}
 		
 	public void MoveEnemy ()
