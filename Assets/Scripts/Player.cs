@@ -82,7 +82,7 @@ public class Player : MovingObject
 
 	private void Fire()
 	{
-		currentWeapon.Fire(Camera.main.ScreenToWorldPoint(Input.mousePosition), transform.position);
+		currentWeapon.Fire(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 	}
 		
 	private void OnTriggerEnter2D (Collider2D other)

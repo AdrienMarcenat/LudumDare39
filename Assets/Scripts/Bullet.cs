@@ -6,6 +6,14 @@ public class Bullet : MonoBehaviour
 {
 	public float damage;
 	public int weaponType;
+	public float range;
+
+	void Update()
+	{
+		range -= Time.deltaTime;
+		if (range < 0)
+			Destroy (gameObject);
+	}
 
 	private void OnTriggerEnter2D (Collider2D other)
 	{

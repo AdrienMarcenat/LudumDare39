@@ -42,7 +42,7 @@ public class Weapon : MonoBehaviour
 		fireDelay += Time.deltaTime;
 	}
 
-	public void Fire(Vector3 direction, Vector3 position)
+	public void Fire(Vector3 direction)
 	{
 		if (currentAmmo == 0 || fireDelay < fireRate)
 			return;
@@ -52,11 +52,12 @@ public class Weapon : MonoBehaviour
 		SoundManager.instance.PlayMultiple (fireSound);
 
 		GameObject bullet = Instantiate (bulletPrefab);
-		bullet.transform.position = position;
+		bullet.transform.position = transform.position;
 		direction.z = 0;
-		bullet.GetComponent<Rigidbody2D> ().velocity = ammoVelocity*((direction - position).normalized);
+		bullet.GetComponent<Rigidbody2D> ().velocity = ammoVelocity*((direction - transform.position).normalized);
 		Bullet bulletScript = bullet.AddComponent<Bullet> ();
 		bulletScript.damage = damage;
+		bulletScript.range = range;
 		bulletScript.weaponType = type;
 	}
 
