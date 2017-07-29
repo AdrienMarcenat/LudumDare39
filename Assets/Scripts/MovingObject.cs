@@ -8,7 +8,8 @@ public abstract class MovingObject : MonoBehaviour
 
 	private BoxCollider2D boxCollider;      
 	private Rigidbody2D rigidBody;               
-	private float inverseMoveTime;          
+	private float inverseMoveTime;
+	private bool isMoving = false;
 
 	protected virtual void Start ()
 	{
@@ -28,6 +29,9 @@ public abstract class MovingObject : MonoBehaviour
 
 		if(hit.transform == null)
 		{
+			if (isMoving)
+				return false;
+			
 			StartCoroutine (SmoothMovement (end));
 			return true;
 		}
@@ -37,6 +41,8 @@ public abstract class MovingObject : MonoBehaviour
 		
 	protected IEnumerator SmoothMovement (Vector3 end)
 	{
+		isMoving = true;
+
 		float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
 		while(sqrRemainingDistance > float.Epsilon)
 		{
@@ -46,6 +52,8 @@ public abstract class MovingObject : MonoBehaviour
 
 			yield return null;
 		}
+
+		isMoving = false;
 	}
 		
 	protected virtual void AttemptMove <T> (int xDir, int yDir)

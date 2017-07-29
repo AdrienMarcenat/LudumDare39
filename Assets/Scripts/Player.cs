@@ -25,6 +25,9 @@ public class Player : MovingObject
 
 	private void Update ()
 	{
+		if (!GameManager.instance.playerTurn)
+			return;
+		
 		int horizontal = (int) (Input.GetAxisRaw ("Horizontal"));
 		int vertical = (int) (Input.GetAxisRaw ("Vertical"));
 
@@ -40,7 +43,7 @@ public class Player : MovingObject
 		RaycastHit2D hit;
 		bool canMove = Move (xDir, yDir, out hit);
 
-		if(canMove)
+		if(hit.transform == null)
 		{
 			// TO DO : audio
 			return;
@@ -50,6 +53,8 @@ public class Player : MovingObject
 
 		if(hitComponent != null)
 			OnCantMove (hitComponent);
+
+		GameManager.instance.playerTurn = false;
 	}
 		
 	protected override void OnCantMove <T> (T component)
