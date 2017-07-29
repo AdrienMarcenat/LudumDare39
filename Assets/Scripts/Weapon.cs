@@ -57,4 +57,9 @@ public class Weapon : MonoBehaviour
 		bulletScript.damage = damage;
 		bulletScript.weaponType = type;
 	}
+
+	public void Reload()
+	{
+		currentAmmo = totalAmmo;
+	}
 }

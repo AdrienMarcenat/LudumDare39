@@ -90,7 +90,7 @@ public class Player : MovingObject
 			GameManager.instance.ChangeLevel ();
 		else if (other.tag == "AmmoPack") 
 		{
-			currentWeapon.SetAmmo (currentWeapon.totalAmmo);
+			currentWeapon.Reload ();
 			SoundManager.instance.PlayMultiple (reloadSound);
 			Destroy (other.gameObject);
 		} 
@@ -103,11 +103,28 @@ public class Player : MovingObject
 		else if (other.tag == "Weapon") 
 		{
 			GameObject newWeapon = other.gameObject;
-			weapons.Add (newWeapon);
-			newWeapon.transform.SetParent (transform, false);
-			newWeapon.transform.localPosition = weaponPosition;
-			SwitchGun ();
-			newWeapon.GetComponent<BoxCollider2D> ().enabled = false;
+			int weaponType = newWeapon.GetComponent<Weapon> ().type;
+			bool alreadyInWeapons = false;
+
+			foreach (GameObject weapon in  weapons) 
+			{
+				if (weapon.GetComponent<Weapon> ().type == weaponType) 
+				{
+					weapon.GetComponent<Weapon> ().Reload ();
+					alreadyInWeapons = true;
+					SoundManager.instance.PlayMultiple (reloadSound);
+					Destroy (newWeapon);
+				}
+			}
+
+			if (!alreadyInWeapons)
+			{
+				weapons.Add (newWeapon);
+				newWeapon.transform.SetParent (transform, false);
+				newWeapon.transform.localPosition = weaponPosition;
+				SwitchGun ();
+				newWeapon.GetComponent<BoxCollider2D> ().enabled = false;
+			}
 		} 
 	}
 
