@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 using System.Collections;    
 
 public class Player : MovingObject
@@ -10,7 +11,6 @@ public class Player : MovingObject
 	public AudioClip attackSound;
 	public AudioClip damageSound;
 
-	public GameObject ammoPrefab;
 	public Vector3 WeaponThumbnailPosition;
 
 	public Text healthText;
@@ -19,14 +19,17 @@ public class Player : MovingObject
 
 	private Animator animator;
 	private int currentHealth;
-
 	private Enemy currentTarget;
-	private Weapon weapon;
+	private Weapon currentWeapon;
+	private List<Weapon> weapons;
+	private LayerMask blockingLayer;
 
 	protected override void Start ()
 	{
 		animator = GetComponent<Animator>();
-		weapon = GetComponent<Weapon> ();
+		currentWeapon = GetComponent<Weapon> ();
+		weapons = new List<Weapon> ();
+		weapons.Add (currentWeapon);
 		currentHealth = totalHealth;
 		UpdateTexts ();
 
@@ -45,86 +48,43 @@ public class Player : MovingObject
 
 	private void Update ()
 	{
-		if (!GameManager.instance.playerTurn)
-			return;
-		
-		int horizontal = (int) (Input.GetAxisRaw ("Horizontal"));
-		int vertical = (int) (Input.GetAxisRaw ("Vertical"));
+		float horizontal = Input.GetAxis ("Horizontal");
+		float vertical = Input.GetAxis ("Vertical");
 
-		if(horizontal != 0)
-			vertical = 0;
-			
-		if(horizontal != 0 || vertical != 0)
-			AttemptMove<Enemy> (horizontal, vertical); // TO DO : Enemy class
-	}
+		Move (horizontal, vertical);
 
-	protected override void AttemptMove <T> (int xDir, int yDir)
-	{
-		RaycastHit2D hit;
-		bool canMove = Move (xDir, yDir, out hit);
-
-		if(canMove)
-		{
-			// TO DO : audio
-		}
-
-		if (!canMove && hit.transform != null) 
-		{
-			T hitComponent = hit.transform.GetComponent <T> ();
-
-			if (hitComponent != null)
-				OnCantMove (hitComponent);
-		}
-
-		GameManager.instance.playerTurn = false;
+		if (Input.GetButton ("Fire"))
+			Fire ();
 	}
 		
-	protected override void OnCantMove <T> (T component)
+	private void Fire()
 	{
-		Enemy hitEnemy = component as Enemy;
-		if (!hitEnemy.attackNextMove) 
-		{
-			if (hitEnemy != currentTarget) 
-			{
-				currentTarget = hitEnemy;
-				hitEnemy.LoseHealth (weapon.damage);
-			}
-			else 
-			{
-				if (Random.Range (0, 2) >= 0.5) 
-				{
-					GameObject ammo = Instantiate (ammoPrefab);
-					ammo.transform.position = hitEnemy.transform.position;
-				}
-			}
-			weapon.SetAmmo (-1);
-			UpdateTexts ();
-
-			animator.SetTrigger ("playerAttack");
-			SoundManager.instance.PlayMultiple (attackSound);
-		}
+		currentWeapon.Fire(Camera.main.ScreenToWorldPoint(Input.mousePosition), transform.position);
 	}
 		
 	private void OnTriggerEnter2D (Collider2D other)
 	{
-		if(other.tag == "Exit")
+		if (other.tag == "Exit")
 			GameManager.instance.ChangeLevel ();
-		else if(other.tag == "Ammo")
+		else if (other.tag == "Ammo") 
 		{
-			weapon.SetAmmo (4);
+			currentWeapon.SetAmmo (4);
 			SoundManager.instance.PlayMultiple (reloadSound);
 			UpdateTexts ();
-			Destroy(other.gameObject);
-		}
-		else if(other.tag == "Weapon")
+			Destroy (other.gameObject);
+		} 
+		else if (other.tag == "Weapon") 
 		{
 			Weapon newWeapon = other.gameObject.GetComponent<Weapon> ();
-			weapon = newWeapon;
-			weapon.transform.position = WeaponThumbnailPosition;
+			weapons.Add (newWeapon);
+			currentWeapon = newWeapon;
+			currentWeapon.transform.position = WeaponThumbnailPosition;
 			// Gun taken sound
 			UpdateTexts ();
-			Destroy(other.gameObject);
-		}
+			Destroy (other.gameObject);
+		} 
+		else if (other.tag == "Enemy")
+			LoseHealth (other.GetComponent<Enemy>().playerDamage);
 	}
 		
 	private void CheckIfGameOver ()
@@ -143,8 +103,8 @@ public class Player : MovingObject
 
 	private void UpdateTexts()
 	{
-		damageText.text = "Damage : " + weapon.damage;
-		ammoText.text = "Ammo : " + weapon.currentAmmo;
+		damageText.text = "Damage : " + currentWeapon.damage;
+		ammoText.text = "Ammo : " + currentWeapon.currentAmmo;
 		healthText.text = "Health : " + currentHealth;
 	}
 }

@@ -6,70 +6,37 @@ public class Enemy : MovingObject
 {
 	public int playerDamage;
 	public int totalHealth;
-	public int attackDelay;
-	public bool attackNextMove = false;
-	public int moveDelay;
 	public Transform healthBar;
+	public int type;
+	public bool isSeeking;
 
-	private int currentAttackDelay;
-	private int currentHealth;
-	private int currentMoveDelay;
 	private Animator animator;
 	private Transform target;
+	private int currentHealth;
 
 	protected override void Start ()
 	{
 		GameManager.instance.AddEnemyToList (this);
 		animator = GetComponent<Animator> ();
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
+		isSeeking = false;
 		currentHealth = totalHealth;
-		currentAttackDelay = 0;
 
 		base.Start ();
 	}
-
-	protected override void AttemptMove <T> (int xDir, int yDir)
-	{
-		currentMoveDelay++;
-		if (currentMoveDelay >= moveDelay)
-			currentMoveDelay = 0;
-		else
-			return;
-
-		base.AttemptMove <T> (xDir, yDir);
-
-		currentAttackDelay++;
-		if (currentAttackDelay >= attackDelay)
-		{
-			currentAttackDelay = 0;
-			attackNextMove = true;
-		} 
-		else
-			attackNextMove = false;
-		animator.SetBool ("enemyAttackNextMove", attackNextMove);
-	}
 		
+	void Update()
+	{
+		if (isSeeking)
+			MoveEnemy ();
+	}
+
 	public void MoveEnemy ()
 	{
-		int xDir = 0;
-		int yDir = 0;
+		float horizontal = target.transform.position.x - transform.position.x;
+		float vertical = target.transform.position.y - transform.position.y;
 
-		if(Mathf.Abs (target.position.x - transform.position.x) < float.Epsilon)
-			yDir = target.position.y > transform.position.y ? 1 : -1;
-		else
-			xDir = target.position.x > transform.position.x ? 1 : -1;
-
-		AttemptMove <Player> (xDir, yDir);
-	}
-		
-	protected override void OnCantMove <T> (T component)
-	{
-		if (attackNextMove) 
-		{
-			Player hitPlayer = component as Player;
-			hitPlayer.LoseHealth (playerDamage);
-			animator.SetTrigger ("enemyAttack");
-		}
+		Move (horizontal, vertical);
 	}
 
 	private void CheckIfGameOver ()

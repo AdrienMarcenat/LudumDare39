@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
 	private List<Enemy> enemyList;
 	private bool enemiesMoving = false;
+	private List<List<int>> enemyWeaponMatching;
 
 	void Awake () 
 	{
@@ -26,30 +27,9 @@ public class GameManager : MonoBehaviour
 
 	void Update()
 	{
-		if (playerTurn || enemiesMoving)
-			return;
-
-		StartCoroutine (MoveEnemies ());
-	}
-
-	IEnumerator MoveEnemies()
-	{
-		enemiesMoving = true;
-		yield return new WaitForSeconds(turnDelay);
-
-		if(enemyList.Count == 0)
-			yield return new WaitForSeconds(turnDelay);
 		
-		for (int i = 0; i < enemyList.Count; i++)
-		{
-			enemyList[i].MoveEnemy ();
-			yield return new WaitForSeconds(enemyList[i].moveTime);
-		}
-
-		playerTurn = true;
-		enemiesMoving = false;
 	}
-
+		
 	public void GameOver()
 	{
 		print ("Game Over");
@@ -72,5 +52,10 @@ public class GameManager : MonoBehaviour
 	public void RemoveEnemyFromList(Enemy enemy)
 	{
 		enemyList.Remove (enemy);
+	}
+
+	public void UpdateMatching(int enemyType, int weapon)
+	{
+		enemyWeaponMatching [enemyType] [weapon]++;
 	}
 }
