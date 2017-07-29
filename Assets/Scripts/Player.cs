@@ -9,6 +9,7 @@ public class Player : MovingObject
 
 	public AudioClip reloadSound;
 	public AudioClip damageSound;
+	public AudioClip healSound;
 
 	public Vector3 weaponPosition;
 	public float invulnerabiltyFrames;
@@ -97,10 +98,16 @@ public class Player : MovingObject
 	{
 		if (other.tag == "Exit")
 			GameManager.instance.ChangeLevel ();
-		else if (other.tag == "Ammo") 
+		else if (other.tag == "AmmoPack") 
 		{
 			currentWeapon.SetAmmo (currentWeapon.totalAmmo);
 			SoundManager.instance.PlayMultiple (reloadSound);
+			Destroy (other.gameObject);
+		} 
+		else if (other.tag == "HealthPack") 
+		{
+			currentHealth = Mathf.Max (totalHealth, currentHealth + 50);
+			SoundManager.instance.PlayMultiple (healSound);
 			Destroy (other.gameObject);
 		} 
 		else if (other.tag == "Weapon") 
