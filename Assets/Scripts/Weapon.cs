@@ -12,8 +12,11 @@ public class Weapon : MonoBehaviour
 	public float fireRate;
 	public float knockBack;
 	public int type;
+	public string name;
+	public Sprite thumbnail;
 
 	public GameObject bulletPrefab;
+	public AudioClip fireSound;
 
 	private float fireDelay;
 
@@ -44,7 +47,7 @@ public class Weapon : MonoBehaviour
 
 		fireDelay = 0;
 		SetAmmo (-1);
-		// Sound
+		SoundManager.instance.PlayMultiple (fireSound);
 
 		GameObject bullet = Instantiate (bulletPrefab);
 		bullet.transform.position = position;

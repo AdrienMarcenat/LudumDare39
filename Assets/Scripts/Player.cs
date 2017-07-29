@@ -8,22 +8,21 @@ public class Player : MovingObject
 	public float totalHealth;
 
 	public AudioClip reloadSound;
-	public AudioClip attackSound;
 	public AudioClip damageSound;
 
-	public Vector3 WeaponThumbnailPosition;
+	public Vector3 weaponPosition;
 	public float invulnerabiltyFrames;
 
-	public Text healthText;
+	public Image healthBar;
 	public Text ammoText;
-	public Text damageText;
+	public Image weaponThumbnail;
 
 	private Animator animator;
 	private float currentHealth;
 	private Enemy currentTarget;
 	private Weapon currentWeapon;
 	private int currentWeaponIndex;
-	private List<Weapon> weapons;
+	private List<GameObject> weapons;
 	private LayerMask blockingLayer;
 
 	private float invulnerabiltyFramesDelay;
@@ -31,11 +30,11 @@ public class Player : MovingObject
 	protected override void Start ()
 	{
 		animator = GetComponent<Animator>();
-		currentWeapon = GetComponent<Weapon> ();
-		weapons = new List<Weapon> ();
-		weapons.Add (currentWeapon);
+		currentWeapon = GetComponentInChildren<Weapon> ();
+		weapons = new List<GameObject> ();
+		weapons.Add (currentWeapon.gameObject);
 		currentHealth = totalHealth;
-		UpdateTexts ();
+		UpdateUI ();
 
 		base.Start ();
 	}
@@ -55,6 +54,15 @@ public class Player : MovingObject
 		float horizontal = Input.GetAxis ("Horizontal");
 		float vertical = Input.GetAxis ("Vertical");
 
+		if (horizontal != 0 || vertical != 0)
+			animator.SetBool ("PlayerMove", true);
+		else
+			animator.SetBool ("PlayerMove", false);
+		
+		Vector3 direction = (Camera.main.ScreenToWorldPoint (Input.mousePosition) - transform.position).normalized;
+		Quaternion rotation = Quaternion.Euler( 0, 0, Mathf.Atan2 ( direction.y, direction.x ) * Mathf.Rad2Deg + 90 );
+		transform.rotation = rotation;
+
 		Move (horizontal, vertical);
 
 		if (Input.GetButton ("Fire"))
@@ -66,16 +74,18 @@ public class Player : MovingObject
 		if(invulnerabiltyFramesDelay > 0)
 			invulnerabiltyFramesDelay -= Time.deltaTime;
 
-		UpdateTexts ();
+		UpdateUI ();
 	}
 		
 	private void SwitchGun()
 	{
 		// Sound
+		weapons [currentWeaponIndex].SetActive (false);
 		currentWeaponIndex++;
 		if (currentWeaponIndex >= weapons.Count)
 			currentWeaponIndex = 0;
-		currentWeapon = weapons [currentWeaponIndex];
+		weapons [currentWeaponIndex].SetActive (true);
+		currentWeapon = weapons [currentWeaponIndex].GetComponent<Weapon> ();
 	}
 
 	private void Fire()
@@ -95,11 +105,12 @@ public class Player : MovingObject
 		} 
 		else if (other.tag == "Weapon") 
 		{
-			Weapon newWeapon = other.gameObject.GetComponent<Weapon> ();
+			GameObject newWeapon = other.gameObject;
 			weapons.Add (newWeapon);
-			currentWeapon = newWeapon;
-			currentWeapon.transform.position = WeaponThumbnailPosition;
-			// Gun taken sound
+			newWeapon.transform.SetParent (transform, false);
+			newWeapon.transform.localPosition = weaponPosition;
+			SwitchGun ();
+			newWeapon.GetComponent<BoxCollider2D> ().enabled = false;
 		} 
 	}
 
@@ -123,10 +134,10 @@ public class Player : MovingObject
 		invulnerabiltyFramesDelay = invulnerabiltyFrames;
 	}
 
-	private void UpdateTexts()
+	private void UpdateUI()
 	{
-		damageText.text = "Damage : " + currentWeapon.damage;
-		ammoText.text = "Ammo : " + currentWeapon.currentAmmo;
-		healthText.text = "Health : " + currentHealth;
+		ammoText.text = "x" + currentWeapon.currentAmmo;
+		healthBar.fillAmount = currentHealth / totalHealth;
+		weaponThumbnail.sprite = currentWeapon.thumbnail;
 	}
 }

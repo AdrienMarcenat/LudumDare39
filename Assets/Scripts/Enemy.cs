@@ -50,8 +50,16 @@ public class Enemy : MovingObject
 
 	public void LoseHealth(float damage)
 	{
+		Seek ();
 		currentHealth = Mathf.Max(0, currentHealth - damage);
 		healthBar.localScale = new Vector3 (currentHealth / totalHealth, healthBar.localScale.y, 1);
 		CheckIfGameOver ();
+	}
+
+	public void Seek()
+	{
+		//if(!isSeeking)
+			// sound;
+		isSeeking = true;
 	}
 }
