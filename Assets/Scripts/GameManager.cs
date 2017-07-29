@@ -68,4 +68,9 @@ public class GameManager : MonoBehaviour
 	{
 		enemyList.Add (enemy);
 	}
+
+	public void RemoveEnemyFromList(Enemy enemy)
+	{
+		enemyList.Remove (enemy);
+	}
 }

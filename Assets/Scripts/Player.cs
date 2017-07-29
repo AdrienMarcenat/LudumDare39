@@ -12,6 +12,8 @@ public class Player : MovingObject
 	private int currentDamage;
 	private int currentHealth;
 
+	private Enemy currentTarget;
+
 	protected override void Start ()
 	{
 		animator = GetComponent<Animator>();
@@ -55,7 +57,7 @@ public class Player : MovingObject
 			// TO DO : audio
 		}
 
-		if (!canMove && !hit.transform == null) 
+		if (!canMove && hit.transform != null) 
 		{
 			T hitComponent = hit.transform.GetComponent <T> ();
 
@@ -69,8 +71,22 @@ public class Player : MovingObject
 	protected override void OnCantMove <T> (T component)
 	{
 		Enemy hitEnemy = component as Enemy;
-		hitEnemy.LoseHealth (currentDamage);
-		animator.SetTrigger ("playerAttack");
+		if (!hitEnemy.attackNextMove) 
+		{
+			if (hitEnemy != currentTarget) 
+			{
+				currentTarget = hitEnemy;
+				currentDamage = totalDamage;
+			}
+			else 
+			{
+				currentAmmo = Mathf.Max (totalAmmo, currentAmmo + 1);
+				currentDamage = 0;
+			}
+
+			hitEnemy.LoseHealth (currentDamage);
+			animator.SetTrigger ("playerAttack");
+		}
 	}
 		
 	private void OnTriggerEnter2D (Collider2D other)
