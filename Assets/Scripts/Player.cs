@@ -23,6 +23,13 @@ public class Player : MovingObject
 		
 	}
 
+	private void OnEnable ()
+	{
+		currentAmmo   = totalAmmo;
+		currentDamage = totalDamage;
+		currentHealth = totalHealth;
+	}
+
 	private void Update ()
 	{
 		if (!GameManager.instance.playerTurn)
@@ -43,16 +50,18 @@ public class Player : MovingObject
 		RaycastHit2D hit;
 		bool canMove = Move (xDir, yDir, out hit);
 
-		if(hit.transform == null)
+		if(canMove)
 		{
 			// TO DO : audio
-			return;
 		}
 
-		T hitComponent = hit.transform.GetComponent <T> ();
+		if (!canMove && !hit.transform == null) 
+		{
+			T hitComponent = hit.transform.GetComponent <T> ();
 
-		if(hitComponent != null)
-			OnCantMove (hitComponent);
+			if (hitComponent != null)
+				OnCantMove (hitComponent);
+		}
 
 		GameManager.instance.playerTurn = false;
 	}
@@ -83,6 +92,7 @@ public class Player : MovingObject
 	public void LoseHealth(int damage)
 	{
 		currentHealth = Mathf.Max(0, currentHealth - damage);
+		print (currentHealth);
 		CheckIfGameOver ();
 	}
 }

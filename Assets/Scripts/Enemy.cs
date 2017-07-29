@@ -47,6 +47,7 @@ public class Enemy : MovingObject
 		
 	protected override void OnCantMove <T> (T component)
 	{
+		print ("enemy attack");
 		Player hitPlayer = component as Player;
 		hitPlayer.LoseHealth (playerDamage);
 		animator.SetTrigger ("enemyAttack");
