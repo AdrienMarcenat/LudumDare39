@@ -9,6 +9,7 @@ public class Enemy : MovingObject
 	public int attackDelay;
 	public bool attackNextMove = false;
 	public int moveDelay;
+	public Transform healthBar;
 
 	private int currentAttackDelay;
 	private int currentHealth;
@@ -65,7 +66,6 @@ public class Enemy : MovingObject
 	{
 		if (attackNextMove) 
 		{
-			print ("enemy attack");
 			Player hitPlayer = component as Player;
 			hitPlayer.LoseHealth (playerDamage);
 			animator.SetTrigger ("enemyAttack");
@@ -84,7 +84,7 @@ public class Enemy : MovingObject
 	public void LoseHealth(int damage)
 	{
 		currentHealth = Mathf.Max(0, currentHealth - damage);
-		print ("enemy " + currentHealth);
+		healthBar.localScale = new Vector3 (((float)currentHealth) / totalHealth, healthBar.localScale.y, 1);
 		CheckIfGameOver ();
 	}
 }
