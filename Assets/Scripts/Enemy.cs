@@ -30,6 +30,7 @@ public class Enemy : MovingObject
 		{
 			GameManager.instance.RemoveEnemyFromList (this);
 			animator.SetTrigger ("isDying");
+			GetComponent<BoxCollider2D> ().enabled = false;
 			Destroy (gameObject, 1);
 		}
 	}
