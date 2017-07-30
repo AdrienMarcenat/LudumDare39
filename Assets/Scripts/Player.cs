@@ -68,7 +68,8 @@ public class Player : MovingObject
 		
 	private void SwitchGun()
 	{
-		SoundManager.instance.PlayMultiple (switchGunSound);
+		if(weapons.Count > 1)
+			SoundManager.instance.PlayMultiple (switchGunSound);
 		weapons [currentWeaponIndex].SetActive (false);
 		currentWeaponIndex++;
 		if (currentWeaponIndex >= weapons.Count)

@@ -8,7 +8,9 @@ public class EnemyDetection : MonoBehaviour
 	{
 		if (other.tag == "Player")
 		{
-			GetComponentInParent<Enemy> ().Seek ();
+			Enemy enemy = GetComponentInParent<Enemy> ();
+			if(enemy != null)
+				enemy.Seek ();
 		}
 	}
 }

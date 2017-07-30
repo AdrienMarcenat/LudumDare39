@@ -36,10 +36,17 @@ public class Camera2D : MonoBehaviour
 	IEnumerator Zoom()
 	{
 		float targetSize = zoomFactor;
-		while (targetSize != camera.orthographicSize)
-		{
-			camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, targetSize, Time.deltaTime * zoomSpeed);
-			yield return null;
-		}
+		if(targetSize < camera.orthographicSize)
+			while (targetSize < camera.orthographicSize)
+			{
+				camera.orthographicSize -= Time.deltaTime * zoomSpeed;
+				yield return null;
+			}
+		else
+			while (targetSize > camera.orthographicSize)
+			{
+				camera.orthographicSize += Time.deltaTime * zoomSpeed;
+				yield return null;
+			}
 	}
 }
