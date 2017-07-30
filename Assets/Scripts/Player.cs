@@ -18,7 +18,6 @@ public class Player : MovingObject
 	public Text ammoText;
 	public Image weaponThumbnail;
 
-
 	private Enemy currentTarget;
 	private Weapon currentWeapon;
 	private int currentWeaponIndex;

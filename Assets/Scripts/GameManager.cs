@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;  
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour 
 {
@@ -9,6 +10,9 @@ public class GameManager : MonoBehaviour
 	public int level = 0;
 	public bool playerTurn = false;
 	public float turnDelay;
+
+	public Image fadeInOutImage;
+	public float fadeSpeed;
 
 	public int enemyTypeNumber;
 	public int weaponTypeNumber;
@@ -35,15 +39,14 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	void Update()
+	void Start()
 	{
-		
+		StartCoroutine(FadeIn());
 	}
 		
 	public void GameOver()
 	{
-		print ("Game Over");
-		// TO DO : game over logic
+		RestartLevel ();
 	}
 
 	public void ChangeLevel()
@@ -71,5 +74,51 @@ public class GameManager : MonoBehaviour
 	public float GetMatching(int enemyType, int weapon)
 	{
 		return Mathf.Min (1, 5.0f / enemyWeaponMatching [enemyType] [weapon]);
+	}
+
+	IEnumerator FadeIn()
+	{
+		while (fadeInOutImage.color.a > 0)
+		{
+			Color c = fadeInOutImage.color;
+			c.a -= fadeSpeed;
+			fadeInOutImage.color = c;
+			yield return null;
+		}
+	}
+
+	IEnumerator FadeOut()
+	{
+		while (fadeInOutImage.color.a < 1)
+		{
+			Color c = fadeInOutImage.color;
+			c.a += fadeSpeed;
+			fadeInOutImage.color = c;
+			yield return null;
+		}
+	}
+
+	public void RestartLevel()
+	{
+		StartCoroutine (RestartLevelRoutine());
+	}
+
+	IEnumerator RestartLevelRoutine()
+	{
+		while (fadeInOutImage.color.a < 1)
+		{
+			Color c = fadeInOutImage.color;
+			c.a += fadeSpeed;
+			fadeInOutImage.color = c;
+			yield return null;
+		}
+		SceneManager.LoadScene (0);
+		while (fadeInOutImage.color.a > 0)
+		{
+			Color c = fadeInOutImage.color;
+			c.a -= fadeSpeed;
+			fadeInOutImage.color = c;
+			yield return null;
+		}
 	}
 }
