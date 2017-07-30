@@ -95,7 +95,7 @@ public class Player : MovingObject
 		} 
 		else if (other.tag == "HealthPack") 
 		{
-			currentHealth = Mathf.Max (totalHealth, currentHealth + 50);
+			currentHealth = Mathf.Max (totalHealth, currentHealth + 30);
 			SoundManager.instance.PlayMultiple (healSound);
 			Destroy (other.gameObject);
 		} 
