@@ -130,7 +130,7 @@ public class Player : MovingObject
 
 	private void OnCollisionStay2D (Collision2D other)
 	{
-		if (other.gameObject.tag == "Enemy" && invulnerabiltyFramesDelay <= 0)
+		if (other.gameObject.tag == "Enemy")
 			LoseHealth (other.gameObject.GetComponent<Enemy>().playerDamage);
 	}
 		
@@ -142,10 +142,25 @@ public class Player : MovingObject
 
 	public override void LoseHealth(float damage)
 	{
+		if (invulnerabiltyFramesDelay > 0)
+			return;
+		
 		SoundManager.instance.PlayMultiple (damageSound);
 		currentHealth = Mathf.Max(0, currentHealth - damage);
 		CheckIfGameOver ();
 		invulnerabiltyFramesDelay = invulnerabiltyFrames;
+		StartCoroutine (Blinking());
+	}
+
+	IEnumerator Blinking()
+	{
+		while (invulnerabiltyFramesDelay >= 0) 
+		{
+			this.gameObject.GetComponent<SpriteRenderer> ().enabled = false;
+			yield return new WaitForSeconds (0.05f);
+			this.gameObject.GetComponent<SpriteRenderer> ().enabled = true;
+			yield return new WaitForSeconds (0.05f);
+		}
 	}
 
 	private void UpdateUI()

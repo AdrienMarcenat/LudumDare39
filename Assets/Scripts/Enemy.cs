@@ -9,9 +9,7 @@ public class Enemy : MovingObject
 	public int type;
 	public bool isSeeking;
 
-	protected Animator animator;
 	protected Transform target;
-	protected float currentHealth;
 
 	protected override void Start ()
 	{
