@@ -22,6 +22,9 @@ public class RoomSystem : MonoBehaviour
 	private void OnTriggerExit2D(Collider2D other)
 	{
 		if (other.tag == "Player")
+		{
 			room.SetActive (false);
+			camera.trackingTarget = null;
+		}
 	}
 }

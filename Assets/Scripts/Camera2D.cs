@@ -10,14 +10,19 @@ public class Camera2D : MonoBehaviour
 	public float zoomSpeed = 5.0f;
 
 	private Camera camera;
+	private Transform player;
 
 	void Start()
 	{
 		camera = GetComponent<Camera>();
+		player = GameObject.FindGameObjectWithTag ("Player").transform;
 	}
 
 	void Update()
 	{
+		if (trackingTarget == null)
+			trackingTarget = player;
+		
 		float xTarget = trackingTarget.position.x;
 		float yTarget = trackingTarget.position.y;
 
