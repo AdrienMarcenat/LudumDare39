@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
 			yield return null;
 		}
 		ResetMatching ();
-		SceneManager.LoadScene (0);
+		SceneManager.LoadScene (1);
 		while (fadeInOutImage.color.a > 0)
 		{
 			Color c = fadeInOutImage.color;
