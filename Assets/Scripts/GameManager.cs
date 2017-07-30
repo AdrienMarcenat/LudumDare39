@@ -7,9 +7,6 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour 
 {
 	public static GameManager instance;
-	public int level = 0;
-	public bool playerTurn = false;
-	public float turnDelay;
 
 	public Image fadeInOutImage;
 	public float fadeSpeed;
@@ -17,7 +14,6 @@ public class GameManager : MonoBehaviour
 	public int enemyTypeNumber;
 	public int weaponTypeNumber;
 
-	private List<Enemy> enemyList;
 	private List<List<int>> enemyWeaponMatching;
 
 	void Awake () 
@@ -28,17 +24,9 @@ public class GameManager : MonoBehaviour
 			Destroy (gameObject);
 
 		DontDestroyOnLoad (gameObject);
-		enemyList = new List<Enemy> ();
-		enemyWeaponMatching = new List<List<int>> ();
-		for (int i = 0; i < enemyTypeNumber; i++) 
-		{
-			List<int> dummy = new List<int> ();
-			for(int j = 0; j < weaponTypeNumber; j++)
-				dummy.Add(1);
-			enemyWeaponMatching.Add (dummy);
-		}
+		ResetMatching ();
 	}
-
+		
 	void Start()
 	{
 		StartCoroutine(FadeIn());
@@ -49,23 +37,6 @@ public class GameManager : MonoBehaviour
 		RestartLevel ();
 	}
 
-	public void ChangeLevel()
-	{
-		enemyList.Clear ();
-		level++;
-		SceneManager.LoadScene (level);
-	}
-
-	public void AddEnemyToList(Enemy enemy)
-	{
-		enemyList.Add (enemy);
-	}
-
-	public void RemoveEnemyFromList(Enemy enemy)
-	{
-		enemyList.Remove (enemy);
-	}
-
 	public void UpdateMatching(int enemyType, int weapon)
 	{
 		enemyWeaponMatching [enemyType] [weapon]++;
@@ -74,6 +45,18 @@ public class GameManager : MonoBehaviour
 	public float GetMatching(int enemyType, int weapon)
 	{
 		return Mathf.Min (1, 5.0f / enemyWeaponMatching [enemyType] [weapon]);
+	}
+
+	private void ResetMatching()
+	{
+		enemyWeaponMatching = new List<List<int>> ();
+		for (int i = 0; i < enemyTypeNumber; i++) 
+		{
+			List<int> dummy = new List<int> ();
+			for(int j = 0; j < weaponTypeNumber; j++)
+				dummy.Add(1);
+			enemyWeaponMatching.Add (dummy);
+		}
 	}
 
 	IEnumerator FadeIn()
@@ -112,6 +95,7 @@ public class GameManager : MonoBehaviour
 			fadeInOutImage.color = c;
 			yield return null;
 		}
+		ResetMatching ();
 		SceneManager.LoadScene (0);
 		while (fadeInOutImage.color.a > 0)
 		{

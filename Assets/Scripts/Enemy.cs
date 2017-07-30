@@ -13,7 +13,6 @@ public class Enemy : MovingObject
 
 	protected override void Start ()
 	{
-		GameManager.instance.AddEnemyToList (this);
 		animator = GetComponent<Animator> ();
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
 		isSeeking = false;
@@ -26,7 +25,6 @@ public class Enemy : MovingObject
 	{
 		if (currentHealth <= 0)
 		{
-			GameManager.instance.RemoveEnemyFromList (this);
 			animator.SetTrigger ("isDying");
 			GetComponent<BoxCollider2D> ().enabled = false;
 			Destroy (gameObject, 1);

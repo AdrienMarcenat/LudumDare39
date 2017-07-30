@@ -18,6 +18,9 @@ public class Player : MovingObject
 	public Text ammoText;
 	public Image weaponThumbnail;
 
+	public GameObject pausePanel;
+	public bool pause = false;
+
 	private Enemy currentTarget;
 	private Weapon currentWeapon;
 	private int currentWeaponIndex;
@@ -40,6 +43,16 @@ public class Player : MovingObject
 
 	private void Update ()
 	{
+		if (Input.GetButtonDown ("Escape")) 
+		{
+			pause = !pause;
+			pausePanel.SetActive (pause);
+			Time.timeScale = 1.0f - Time.timeScale; 
+		}
+
+		if (pause)
+			return;
+
 		float horizontal = Input.GetAxis ("Horizontal");
 		float vertical = Input.GetAxis ("Vertical");
 
@@ -47,9 +60,9 @@ public class Player : MovingObject
 			animator.SetBool ("PlayerMove", true);
 		else
 			animator.SetBool ("PlayerMove", false);
-		
+	
 		Vector3 direction = (Camera.main.ScreenToWorldPoint (Input.mousePosition) - transform.position).normalized;
-		Quaternion rotation = Quaternion.Euler( 0, 0, Mathf.Atan2 ( direction.y, direction.x ) * Mathf.Rad2Deg + 90 );
+		Quaternion rotation = Quaternion.Euler (0, 0, Mathf.Atan2 (direction.y, direction.x) * Mathf.Rad2Deg + 90);
 		transform.rotation = rotation;
 
 		Move (horizontal, vertical);
@@ -59,8 +72,10 @@ public class Player : MovingObject
 
 		if (Input.GetButtonDown ("SwitchGun"))
 			SwitchGun ();
-		
-		if(invulnerabiltyFramesDelay > 0)
+
+
+	
+		if (invulnerabiltyFramesDelay > 0)
 			invulnerabiltyFramesDelay -= Time.deltaTime;
 
 		UpdateUI ();
@@ -85,9 +100,7 @@ public class Player : MovingObject
 		
 	private void OnTriggerEnter2D (Collider2D other)
 	{
-		if (other.tag == "Exit")
-			GameManager.instance.ChangeLevel ();
-		else if (other.tag == "AmmoPack") 
+		if (other.tag == "AmmoPack") 
 		{
 			currentWeapon.Reload ();
 			SoundManager.instance.PlayMultiple (reloadSound);
