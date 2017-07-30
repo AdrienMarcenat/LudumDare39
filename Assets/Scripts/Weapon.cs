@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-	public float range = 1;
-	public float damage = 1;
 	public int totalAmmo = int.MaxValue;
 	public int currentAmmo;
 	public float ammoVelocity;
@@ -13,7 +11,6 @@ public class Weapon : MonoBehaviour
 	public float knockBack;
 	public int type;
 	public string name;
-	public string targetTag;
 
 	public Sprite thumbnail;
 	public Sprite topDownSprite;
@@ -56,11 +53,6 @@ public class Weapon : MonoBehaviour
 		bullet.transform.position = transform.position;
 		direction.z = 0;
 		bullet.GetComponent<Rigidbody2D> ().velocity = ammoVelocity*((direction - transform.position).normalized);
-		Bullet bulletScript = bullet.AddComponent<Bullet> ();
-		bulletScript.damage = damage;
-		bulletScript.range = range;
-		bulletScript.weaponType = type;
-		bulletScript.targetTag = targetTag;
 
 		return true;
 	}

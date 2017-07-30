@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
 	public int weaponType;
 	public float range;
 	public string targetTag;
+	public float penetration;
 
 	void Update()
 	{
@@ -33,7 +34,7 @@ public class Bullet : MonoBehaviour
 				hitPlayer.LoseHealth (damage);
 			}
 
-			Destroy (gameObject);
+			Destroy (gameObject, penetration);
 		}
 		else if(other.tag == "Wall")
 			Destroy (gameObject);
