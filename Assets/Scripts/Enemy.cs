@@ -9,6 +9,8 @@ public class Enemy : MovingObject
 	public int type;
 	public bool isSeeking;
 
+	public AudioClip sound;
+
 	protected Transform target;
 
 	protected override void Start ()
@@ -41,8 +43,8 @@ public class Enemy : MovingObject
 
 	public void Seek()
 	{
-		//if(!isSeeking)
-			// sound;
+		if (!isSeeking)
+			SoundManager.instance.PlayMultiple (sound);
 		isSeeking = true;
 		animator.SetTrigger ("isSeeking");
 		healthBar.gameObject.SetActive (true);
