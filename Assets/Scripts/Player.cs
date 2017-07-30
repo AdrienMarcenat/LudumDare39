@@ -8,6 +8,7 @@ public class Player : MovingObject
 	public AudioClip reloadSound;
 	public AudioClip damageSound;
 	public AudioClip healSound;
+	public AudioClip switchGunSound;
 
 	public Vector3 weaponPosition;
 	public Vector3 weaponRotation;
@@ -68,7 +69,7 @@ public class Player : MovingObject
 		
 	private void SwitchGun()
 	{
-		// Sound
+		SoundManager.instance.PlayMultiple (switchGunSound);
 		weapons [currentWeaponIndex].SetActive (false);
 		currentWeaponIndex++;
 		if (currentWeaponIndex >= weapons.Count)

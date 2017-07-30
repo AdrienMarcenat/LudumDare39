@@ -25,12 +25,14 @@ public class GameManager : MonoBehaviour
 
 		DontDestroyOnLoad (gameObject);
 		enemyList = new List<Enemy> ();
-		List<int> dummy = new List<int> ();
-		for(int i = 0; i < weaponTypeNumber; i++)
-			dummy.Add(1);
 		enemyWeaponMatching = new List<List<int>> ();
-		for(int i = 0; i < enemyTypeNumber; i++)
-			enemyWeaponMatching.Add(dummy);
+		for (int i = 0; i < enemyTypeNumber; i++) 
+		{
+			List<int> dummy = new List<int> ();
+			for(int j = 0; j < weaponTypeNumber; j++)
+				dummy.Add(1);
+			enemyWeaponMatching.Add (dummy);
+		}
 	}
 
 	void Update()
