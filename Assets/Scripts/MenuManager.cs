@@ -21,6 +21,9 @@ public class MenuManager : MonoBehaviour
 			blinkingText.SetActive (!blinkingText.activeSelf);
 		}
 
+		if (Input.GetButtonDown("Escape"))
+			Application.Quit ();
+		
 		if (Input.anyKeyDown)
 			SceneManager.LoadScene (1);
 	}
