@@ -31,6 +31,7 @@ public class Player : Character
 		currentWeapon = GetComponentInChildren<Weapon> ();
 		weapons = new List<GameObject> ();
 		weapons.Add (currentWeapon.gameObject);
+		playerEventManager.UpdateUIEvent ();
 	}
 
 	void OnEnable()
@@ -132,8 +133,8 @@ public class Player : Character
 		if (invulnerabilityFramesDelay > 0)
 			return;
 
-		playerEventManager.LoseHealthEvent ();
 		LoseHealth (damage);
+		playerEventManager.LoseHealthEvent ();
 		CheckIfGameOver ();
 		StartCoroutine (InvulnerabilityRoutine());
 	}

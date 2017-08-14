@@ -29,7 +29,6 @@ public class PlayerGUI : MonoBehaviour
 
 	protected void UpdateUI()
 	{
-		print ("bob");
 		float currentHealth = player.GetCurrentHealth ();
 		float totalHealth = player.GetTotalHealth ();
 
