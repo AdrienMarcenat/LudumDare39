@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-	public int totalAmmo = int.MaxValue;
-	public int currentAmmo;
-	public float ammoVelocity;
-	public float fireRate;
-	public float knockBack;
-	public int type;
-	public string name;
+	[SerializeField] int type;
+	[SerializeField] int totalAmmo = int.MaxValue;
+	[SerializeField] int currentAmmo;
+	[SerializeField] float ammoVelocity;
+	[SerializeField] float fireRate;
+	[SerializeField] string name;
 
-	public Sprite thumbnail;
-	public Sprite topDownSprite;
+	[SerializeField] Sprite thumbnail;
+	[SerializeField] Sprite topDownSprite;
 
-	public GameObject bulletPrefab;
-	public AudioClip fireSound;
+	[SerializeField] GameObject bulletPrefab;
+	[SerializeField] AudioClip fireSound;
 
 	private float fireDelay;
 
@@ -29,10 +28,7 @@ public class Weapon : MonoBehaviour
 	public void SetAmmo(int amount)
 	{
 		currentAmmo += amount;
-		if (currentAmmo < 0)
-			currentAmmo = 0;
-		if (currentAmmo > totalAmmo)
-			currentAmmo = totalAmmo;
+		currentAmmo = Mathf.Clamp (currentAmmo, 0, totalAmmo);
 	}
 
 	void Update()
@@ -47,9 +43,10 @@ public class Weapon : MonoBehaviour
 
 		fireDelay = 0;
 		SetAmmo (-1);
-		SoundManager.instance.PlayMultiple (fireSound);
+		SoundManager.PlayMultiple (fireSound);
 
-		GameObject bullet = Instantiate (bulletPrefab);
+		// The bullet is a child of the current room so it will be deactivated when the player leave the room
+		GameObject bullet = Instantiate (bulletPrefab, RoomSystem.currentRoom);
 		bullet.transform.position = transform.position;
 		direction.z = 0;
 		bullet.GetComponent<Rigidbody2D> ().velocity = ammoVelocity*((direction - transform.position).normalized);
@@ -65,5 +62,20 @@ public class Weapon : MonoBehaviour
 	public void SwitchSprite()
 	{
 		GetComponent<SpriteRenderer> ().sprite = topDownSprite;
+	}
+
+	public int GetType()
+	{
+		return type;
+	}
+
+	public int GetAmmo()
+	{
+		return currentAmmo;
+	}
+
+	public Sprite GetThumbnail()
+	{
+		return thumbnail;
 	}
 }

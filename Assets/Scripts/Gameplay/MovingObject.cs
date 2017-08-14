@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class MovingObject : Character
+public abstract class MovingObject : MonoBehaviour
 {     
 	protected BoxCollider2D boxCollider;      
 	protected Rigidbody2D rigidBody;
 
-	public float smoothSpeed;
+	[SerializeField] float smoothSpeed;
 
-	protected virtual void Start ()
+	protected void Start ()
 	{
 		boxCollider = GetComponent <BoxCollider2D> ();
 		rigidBody = GetComponent <Rigidbody2D> ();

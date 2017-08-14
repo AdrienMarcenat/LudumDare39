@@ -6,16 +6,15 @@ public class EvilPlant : Enemy
 {
 	private Weapon weapon;
 
-	protected override void Start ()
+	protected void Start ()
 	{
-		weapon = GetComponentInChildren<Weapon>();
 		base.Start ();
+		weapon = GetComponentInChildren<Weapon>();
 	}
 
 	void Update()
 	{
-		if (isSeeking)
-			if (weapon.Fire (target.position))
-				animator.SetTrigger ("isAttacking");
+		if (isSeeking && weapon.Fire (target.position))
+			animator.SetTrigger ("isAttacking");
 	}
 }

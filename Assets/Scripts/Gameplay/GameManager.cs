@@ -4,32 +4,40 @@ using UnityEngine;
 using UnityEngine.SceneManagement;  
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour 
+public class GameManager : Singleton<GameManager> 
 {
-	public static GameManager instance;
+	public static bool pause;
 
-	public Image fadeInOutImage;
-	public float fadeSpeed;
+	[SerializeField] Image fadeInOutImage;
+	[SerializeField] float fadeSpeed;
 
-	public int enemyTypeNumber;
-	public int weaponTypeNumber;
+	[SerializeField] int enemyTypeNumber;
+	[SerializeField] int weaponTypeNumber;
 
-	private List<List<int>> enemyWeaponMatching;
+	private static GameObject pausePanel;
+	private static List<List<int>> enemyWeaponMatching;
 
 	void Awake () 
 	{
-		if (instance == null)
-			instance = this;
-		else if (instance != this)
-			Destroy (gameObject);
+		base.Awake ();
 
-		DontDestroyOnLoad (gameObject);
 		ResetMatching ();
+		if(pausePanel == null)
+			pausePanel = GameObject.Find ("PausePanel");
+		pause = false;
+		pausePanel.SetActive (false);
 	}
 		
 	void Start()
 	{
 		StartCoroutine(FadeIn());
+	}
+
+	void OnEnable()
+	{
+		GameEventManager.Pause    += Pause;
+		GameEventManager.GameOver += GameOver;
+		GameEventManager.EnemyHit += UpdateMatching;
 	}
 		
 	public void GameOver()
@@ -37,12 +45,19 @@ public class GameManager : MonoBehaviour
 		RestartLevel ();
 	}
 
-	public void UpdateMatching(int enemyType, int weapon)
+	public static void Pause()
 	{
-		enemyWeaponMatching [enemyType] [weapon]++;
+		pause = !pause;
+		pausePanel.SetActive (pause);
+		Time.timeScale = 1.0f - Time.timeScale; 
 	}
 
-	public float GetMatching(int enemyType, int weapon)
+	private void UpdateMatching(int enemyType, int weaponType)
+	{
+		enemyWeaponMatching [enemyType] [weaponType]++;
+	}
+
+	public static float GetMatching(int enemyType, int weapon)
 	{
 		return Mathf.Min (1, 5.0f / enemyWeaponMatching [enemyType] [weapon]);
 	}
@@ -81,7 +96,7 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	public void RestartLevel()
+	private void RestartLevel()
 	{
 		StartCoroutine (RestartLevelRoutine());
 	}

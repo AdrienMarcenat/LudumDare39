@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Camera2D : MonoBehaviour
 {
-	public float followSpeed;
-	public Transform trackingTarget;
-	public float zoomFactor = 1.0f;
-	public float zoomSpeed = 5.0f;
+	[SerializeField] float followSpeed;
+	[SerializeField] float zoomFactor = 1.0f;
+	[SerializeField] float zoomSpeed  = 5.0f;
+	[SerializeField] Transform trackingTarget;
 
 	private Camera camera;
 	private Transform player;
 
-	void Start()
+	void Awake()
 	{
 		camera = GetComponent<Camera>();
 		player = GameObject.FindGameObjectWithTag ("Player").transform;
@@ -26,7 +26,7 @@ public class Camera2D : MonoBehaviour
 		float xTarget = trackingTarget.position.x;
 		float yTarget = trackingTarget.position.y;
 
-		float xNew = Mathf.Lerp(transform.position.x, xTarget, Time.deltaTime * followSpeed);
+		float xNew = Mathf.Lerp (transform.position.x, xTarget, Time.deltaTime * followSpeed);
 		float yNew = Mathf.Lerp (transform.position.y, yTarget, Time.deltaTime * followSpeed);
 	
 		transform.position = new Vector3(xNew, yNew, transform.position.z);
@@ -34,6 +34,8 @@ public class Camera2D : MonoBehaviour
 		
 	public void SetZoom(float zoomFactor)
 	{
+		if(camera == null)
+			camera = GetComponent<Camera>();
 		this.zoomFactor = zoomFactor;
 		StartCoroutine (Zoom());
 	}
@@ -53,5 +55,10 @@ public class Camera2D : MonoBehaviour
 				camera.orthographicSize += Time.deltaTime * zoomSpeed;
 				yield return null;
 			}
+	}
+
+	public void SetTrackingTarget(Transform newTarget)
+	{
+		trackingTarget = newTarget;
 	}
 }
