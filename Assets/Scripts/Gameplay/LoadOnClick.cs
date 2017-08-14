@@ -7,7 +7,7 @@ public class LoadOnClick : MonoBehaviour
 {
 	public void LoadByIndex(int index)
 	{
-		Time.timeScale = 1.0f;
+		GameEventManager.QuitLevelEvent ();
 		SceneManager.LoadScene (index);
 	}
 }

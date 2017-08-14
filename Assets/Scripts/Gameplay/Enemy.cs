@@ -27,12 +27,14 @@ public class Enemy : Character
 
 	void OnEnable()
 	{
-		enemyEventManager.Damage += Damage;
+		enemyEventManager.Damage   += Damage;
+		enemyEventManager.GameOver += GameOver;
 	}
 
 	void OnDisable()
 	{
-		enemyEventManager.Damage -= Damage;
+		enemyEventManager.Damage   -= Damage;
+		enemyEventManager.GameOver -= GameOver;
 	}
 
 	public void Damage(float damage, int weaponType)
@@ -45,14 +47,11 @@ public class Enemy : Character
 		CheckIfGameOver();
 	}
 		
-	protected void CheckIfGameOver ()
+	private void GameOver ()
 	{
-		if (currentHealth <= 0)
-		{
-			animator.SetTrigger ("isDying");
-			boxCollider.enabled = false;
-			Destroy (gameObject, 1);
-		}
+		animator.SetTrigger ("isDying");
+		boxCollider.enabled = false;
+		Destroy (gameObject, 1);
 	}
 
 	private void OnCollisionStay2D (Collision2D other)

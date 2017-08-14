@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;  
-using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager> 
 {
 	public static bool pause;
-
-	[SerializeField] Image fadeInOutImage;
-	[SerializeField] float fadeSpeed;
 
 	[SerializeField] int enemyTypeNumber;
 	[SerializeField] int weaponTypeNumber;
@@ -17,35 +13,16 @@ public class GameManager : Singleton<GameManager>
 	private static GameObject pausePanel;
 	private static List<List<int>> enemyWeaponMatching;
 
-	void Awake () 
-	{
-		base.Awake ();
-
-		ResetMatching ();
-		if(pausePanel == null)
-			pausePanel = GameObject.Find ("PausePanel");
-		pause = false;
-		pausePanel.SetActive (false);
-	}
-		
-	void Start()
-	{
-		StartCoroutine(FadeIn());
-	}
-
 	void OnEnable()
 	{
-		GameEventManager.Pause    += Pause;
-		GameEventManager.GameOver += GameOver;
-		GameEventManager.EnemyHit += UpdateMatching;
-	}
-		
-	public void GameOver()
-	{
-		RestartLevel ();
+		GameEventManager.Pause     += Pause;
+		GameEventManager.GameOver  += RestartLevel;
+		GameEventManager.EnemyHit  += UpdateMatching;
+		GameEventManager.QuitLevel += QuitLevel;
+		SceneManager.sceneLoaded   += OnSceneLoaded;
 	}
 
-	public static void Pause()
+	private void Pause()
 	{
 		pause = !pause;
 		pausePanel.SetActive (pause);
@@ -74,50 +51,29 @@ public class GameManager : Singleton<GameManager>
 		}
 	}
 
-	IEnumerator FadeIn()
-	{
-		while (fadeInOutImage.color.a > 0)
-		{
-			Color c = fadeInOutImage.color;
-			c.a -= fadeSpeed;
-			fadeInOutImage.color = c;
-			yield return null;
-		}
-	}
-
-	IEnumerator FadeOut()
-	{
-		while (fadeInOutImage.color.a < 1)
-		{
-			Color c = fadeInOutImage.color;
-			c.a += fadeSpeed;
-			fadeInOutImage.color = c;
-			yield return null;
-		}
-	}
-
 	private void RestartLevel()
 	{
-		StartCoroutine (RestartLevelRoutine());
+		GameEventManager.QuitLevelEvent ();
+		SceneManager.LoadScene (1);
 	}
 
-	IEnumerator RestartLevelRoutine()
+	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
-		while (fadeInOutImage.color.a < 1)
-		{
-			Color c = fadeInOutImage.color;
-			c.a += fadeSpeed;
-			fadeInOutImage.color = c;
-			yield return null;
-		}
+		Reset ();
+	}
+
+	private void QuitLevel()
+	{
+		Reset ();
+	}
+
+	private void Reset()
+	{
 		ResetMatching ();
-		SceneManager.LoadScene (1);
-		while (fadeInOutImage.color.a > 0)
-		{
-			Color c = fadeInOutImage.color;
-			c.a -= fadeSpeed;
-			fadeInOutImage.color = c;
-			yield return null;
-		}
+		if(pausePanel == null)
+			pausePanel = GameObject.Find ("PausePanel");
+		pause = false;
+		Time.timeScale = 1.0f;
+		pausePanel.SetActive (false);
 	}
 }

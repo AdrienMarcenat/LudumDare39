@@ -151,12 +151,6 @@ public class Player : Character
 		sprite.enabled = true;
 	}
 
-	protected void CheckIfGameOver ()
-	{
-		if (currentHealth <= 0)
-			playerEventManager.GameOverEvent();
-	}
-
 	public Weapon GetCurrentWeapon()
 	{
 		return currentWeapon;
@@ -164,6 +158,6 @@ public class Player : Character
 
 	private void GameOver()
 	{
-		GameEventManager.GameOverEvent ();
+		GameEventManager.GameOverEvent();
 	}
 }

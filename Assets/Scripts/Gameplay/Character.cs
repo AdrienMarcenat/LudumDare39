@@ -36,4 +36,10 @@ public abstract class Character : MovingObject
 	{
 		return totalHealth;
 	}
+
+	protected void CheckIfGameOver ()
+	{
+		if (currentHealth <= 0)
+			characterEventManager.GameOverEvent();
+	}
 }
