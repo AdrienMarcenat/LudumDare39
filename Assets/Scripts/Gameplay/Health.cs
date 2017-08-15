@@ -27,10 +27,11 @@ public class Health : MonoBehaviour
 		if (!enable)
 			return;
 		
-		currentHealth = Mathf.Max(0, currentHealth - damageModifier*damage);
-
 		if(Damage != null)
 			Damage (damage, weaponType);
+
+		currentHealth = Mathf.Max(0, currentHealth - damageModifier*damage);
+
 		if (SimpleDamage != null)
 			SimpleDamage ();
 		

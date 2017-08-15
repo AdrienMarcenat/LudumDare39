@@ -9,6 +9,8 @@ public class GameManager : Singleton<GameManager>
 
 	[SerializeField] int enemyTypeNumber;
 	[SerializeField] int weaponTypeNumber;
+	[SerializeField] float mutationSpeed;
+	[SerializeField] float minimalDamageModifier;
 
 	private List<List<int>> enemyWeaponMatching;
 
@@ -52,7 +54,7 @@ public class GameManager : Singleton<GameManager>
 
 	public float GetMatching(int enemyType, int weapon)
 	{
-		return Mathf.Min (1, 5.0f / enemyWeaponMatching [enemyType] [weapon]);
+		return Mathf.Max (minimalDamageModifier, 1 - enemyWeaponMatching [enemyType] [weapon] / mutationSpeed);
 	}
 
 	private void ResetMatching()
@@ -62,7 +64,7 @@ public class GameManager : Singleton<GameManager>
 		{
 			List<int> dummy = new List<int> ();
 			for(int j = 0; j < weaponTypeNumber; j++)
-				dummy.Add(1);
+				dummy.Add(0);
 			enemyWeaponMatching.Add (dummy);
 		}
 	}
