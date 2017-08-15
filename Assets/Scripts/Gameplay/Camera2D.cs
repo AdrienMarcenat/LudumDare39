@@ -16,6 +16,7 @@ public class Camera2D : MonoBehaviour
 	{
 		camera = GetComponent<Camera>();
 		player = GameObject.FindGameObjectWithTag ("Player").transform;
+		SetZoom(zoomFactor);
 	}
 
 	void Update()
