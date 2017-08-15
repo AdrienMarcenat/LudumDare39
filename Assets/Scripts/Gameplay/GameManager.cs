@@ -10,31 +10,47 @@ public class GameManager : Singleton<GameManager>
 	[SerializeField] int enemyTypeNumber;
 	[SerializeField] int weaponTypeNumber;
 
-	private static GameObject pausePanel;
-	private static List<List<int>> enemyWeaponMatching;
+	private List<List<int>> enemyWeaponMatching;
 
-	void OnEnable()
+	public delegate void SimpleEvent();
+	public static event SimpleEvent Pause;
+	public static event SimpleEvent ChangeScene;
+
+	void Start()
 	{
-		GameEventManager.Pause     += Pause;
-		GameEventManager.GameOver  += RestartLevel;
-		GameEventManager.EnemyHit  += UpdateMatching;
-		GameEventManager.QuitLevel += QuitLevel;
-		SceneManager.sceneLoaded   += OnSceneLoaded;
+		Reset ();
 	}
 
-	private void Pause()
+	public static void PauseEvent()
 	{
 		pause = !pause;
-		pausePanel.SetActive (pause);
-		Time.timeScale = 1.0f - Time.timeScale; 
+		Time.timeScale = 1.0f - Time.timeScale;
+		if (Pause != null)
+			Pause ();
 	}
 
-	private void UpdateMatching(int enemyType, int weaponType)
+	public static void LoadScene(int index)
+	{
+		instance.Reset ();
+		if(ChangeScene != null)
+			ChangeScene ();
+		SceneManager.LoadScene (index);
+	}
+
+	void Update ()
+	{
+		if (Input.GetButtonDown ("Escape")) 
+		{
+			PauseEvent ();
+		}
+	}
+
+	public void UpdateMatching(int enemyType, int weaponType)
 	{
 		enemyWeaponMatching [enemyType] [weaponType]++;
 	}
 
-	public static float GetMatching(int enemyType, int weapon)
+	public float GetMatching(int enemyType, int weapon)
 	{
 		return Mathf.Min (1, 5.0f / enemyWeaponMatching [enemyType] [weapon]);
 	}
@@ -51,29 +67,10 @@ public class GameManager : Singleton<GameManager>
 		}
 	}
 
-	private void RestartLevel()
-	{
-		GameEventManager.QuitLevelEvent ();
-		SceneManager.LoadScene (1);
-	}
-
-	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-	{
-		Reset ();
-	}
-
-	private void QuitLevel()
-	{
-		Reset ();
-	}
-
 	private void Reset()
 	{
 		ResetMatching ();
-		if(pausePanel == null)
-			pausePanel = GameObject.Find ("PausePanel");
 		pause = false;
 		Time.timeScale = 1.0f;
-		pausePanel.SetActive (false);
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : Character
+public class Enemy : MonoBehaviour
 {
 	[SerializeField] protected int type;
 	[SerializeField] protected float playerDamage;
@@ -9,48 +9,44 @@ public class Enemy : Character
 	[SerializeField] protected AudioClip sound;
 
 	protected Transform target;
-	[HideInInspector] public EnemyEventManager enemyEventManager;
+	protected Health health;
+	protected Animator animator;
 
-	protected void Awake()
+	public delegate void SimpleEvent();
+	public event SimpleEvent EnemySeek;
+
+	protected void Awake ()
 	{
-		enemyEventManager = GetComponent<EnemyEventManager> ();
-		characterEventManager = enemyEventManager;
-	}
-
-	protected void Start ()
-	{
-		base.Start ();
-
+		animator = GetComponent<Animator> ();
+		health = GetComponent<Health> ();
 		target = GameObject.FindGameObjectWithTag ("Player").transform;
 		isSeeking = false;
 	}
 
 	void OnEnable()
 	{
-		enemyEventManager.Damage   += Damage;
-		enemyEventManager.GameOver += GameOver;
+		health.Damage   += Damage;
+		health.GameOver += GameOver;
 	}
 
 	void OnDisable()
 	{
-		enemyEventManager.Damage   -= Damage;
-		enemyEventManager.GameOver -= GameOver;
+		health.Damage   -= Damage;
+		health.GameOver -= GameOver;
 	}
 
-	public void Damage(float damage, int weaponType)
+	private void Damage(float damage, int weaponType)
 	{
 		Seek();
-		float damageModifier = GameManager.GetMatching (type, weaponType);
-		LoseHealth (damage * damageModifier);
-		characterEventManager.LoseHealthEvent ();
-		GameEventManager.EnemyHitEvent (type, weaponType);
-		CheckIfGameOver();
+		float damageModifier = GameManager.instance.GetMatching (type, weaponType);
+		health.SetDamageModifier (damageModifier);
+		GameManager.instance.UpdateMatching (type, weaponType);
 	}
 		
 	private void GameOver ()
 	{
 		animator.SetTrigger ("isDying");
-		boxCollider.enabled = false;
+		GetComponent<BoxCollider2D>().enabled = false;
 		Destroy (gameObject, 1);
 	}
 
@@ -58,8 +54,8 @@ public class Enemy : Character
 	{
 		if (other.gameObject.tag == "Player") 
 		{
-			Character player = other.gameObject.GetComponent<Character> ();
-			player.characterEventManager.DamageEvent (playerDamage, 0);
+			Health playerHealth = other.gameObject.GetComponent<Health> ();
+			playerHealth.LoseHealth (playerDamage, 0);
 		}
 	}
 
@@ -68,7 +64,9 @@ public class Enemy : Character
 		if (isSeeking)
 			return;
 
-		enemyEventManager.SeekEvent ();
+		if (EnemySeek != null)
+			EnemySeek ();
+		
 		SoundManager.PlayMultiple (sound);
 		isSeeking = true;
 		animator.SetTrigger ("isSeeking");

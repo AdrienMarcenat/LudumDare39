@@ -5,19 +5,24 @@ using UnityEngine.SceneManagement;
 
 public class GameGUI : MonoBehaviour
 {
-	[SerializeField] Image fadeInOutImage;
+	private Image fadeInOutImage;
 	[SerializeField] float fadeSpeed;
+
+	void Awake()
+	{
+		fadeInOutImage = GetComponent<Image> ();
+	}
 
 	void OnEnable()
 	{
-		GameEventManager.QuitLevel += QuitLevel;
-		SceneManager.sceneLoaded   += OnSceneLoaded;
+		GameManager.ChangeScene  += ChangeScene;
+		SceneManager.sceneLoaded += OnSceneLoaded;
 	}
 
 	void OnDisable()
 	{
-		GameEventManager.QuitLevel -= QuitLevel;
-		SceneManager.sceneLoaded   -= OnSceneLoaded;
+		GameManager.ChangeScene  -= ChangeScene;
+		SceneManager.sceneLoaded -= OnSceneLoaded;
 	}
 
 	IEnumerator FadeIn()
@@ -58,7 +63,7 @@ public class GameGUI : MonoBehaviour
 		fadeInOutImage.color = c;
 	}
 
-	private void QuitLevel()
+	private void ChangeScene()
 	{
 		StartCoroutine (FadeOut ());
 	}

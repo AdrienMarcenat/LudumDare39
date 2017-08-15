@@ -1,19 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerEventManager : CharacterEventManager
+public class PlayerEventManager : MonoBehaviour
 {
 	public delegate void SimpleEvent();
 	public event SimpleEvent Fire;
 	public event SimpleEvent SwitchGun;
 	public event SimpleEvent AmmoPack;
 	public event SimpleEvent HealthPack;
+	public event SimpleEvent UpdateUI;
 
 	public delegate void WeaponPickAction(GameObject newWeapon);
 	public event WeaponPickAction WeaponPick;
 
 	public delegate void MoveAction(float x, float y);
 	public event MoveAction Move;
+
+	void Start()
+	{
+		UpdateUIEvent ();
+	}
 
 	protected void Update () 
 	{
@@ -22,17 +28,20 @@ public class PlayerEventManager : CharacterEventManager
 
 		float horizontal = Input.GetAxisRaw ("Horizontal");
 		float vertical = Input.GetAxisRaw ("Vertical");
-		Move (horizontal, vertical);
+		if(Move != null)
+			Move (horizontal, vertical);
 
 		if (Input.GetButton ("Fire"))
 		{
-			Fire ();
+			if (Fire != null) 
+				Fire ();
 			UpdateUIEvent ();
 		}
 
 		if (Input.GetButtonDown ("SwitchGun"))
 		{
-			SwitchGun ();
+			if (SwitchGun != null)
+				SwitchGun ();
 			UpdateUIEvent ();
 		}
 	}
@@ -41,21 +50,30 @@ public class PlayerEventManager : CharacterEventManager
 	{
 		if (other.tag == "AmmoPack") 
 		{
-			AmmoPack ();
+			if(AmmoPack != null)
+				AmmoPack ();
 			UpdateUIEvent ();
 			Destroy (other.gameObject);
 		} 
 		else if (other.tag == "HealthPack") 
 		{
-			HealthPack ();
+			if(HealthPack != null)
+				HealthPack ();
 			UpdateUIEvent ();
 			Destroy (other.gameObject);
 		} 
 		else if (other.tag == "Weapon") 
 		{
-			WeaponPick (other.gameObject);
+			if(WeaponPick != null)
+				WeaponPick (other.gameObject);
 			UpdateUIEvent ();
 		} 
+	}
+
+	protected void UpdateUIEvent()
+	{
+		if(UpdateUI != null)
+			UpdateUI ();
 	}
 }
 

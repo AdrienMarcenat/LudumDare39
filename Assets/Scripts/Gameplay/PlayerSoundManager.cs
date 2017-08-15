@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerSoundManager : MonoBehaviour
 {
 	private PlayerEventManager playerEventManager;
+	private Health playerHealth;
 
 	[SerializeField] AudioClip reloadSound;
 	[SerializeField] AudioClip damageSound;
@@ -12,7 +13,8 @@ public class PlayerSoundManager : MonoBehaviour
 
 	void Awake()
 	{
-		playerEventManager = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player>().playerEventManager;
+		playerEventManager = GetComponent<PlayerEventManager>();
+		playerHealth = GetComponent<Health> ();
 	}
 
 	void OnEnable()
@@ -21,7 +23,7 @@ public class PlayerSoundManager : MonoBehaviour
 		playerEventManager.AmmoPack   += Reload;
 		playerEventManager.HealthPack += Heal;
 		playerEventManager.WeaponPick += SwitchGun;
-		playerEventManager.LoseHealth += Damage;
+		playerHealth.SimpleDamage += Damage;
 	}
 
 	void OnDisable()
@@ -30,7 +32,7 @@ public class PlayerSoundManager : MonoBehaviour
 		playerEventManager.AmmoPack   -= Reload;
 		playerEventManager.HealthPack -= Heal;
 		playerEventManager.WeaponPick -= SwitchGun;
-		playerEventManager.LoseHealth -= Damage;
+		playerHealth.SimpleDamage -= Damage;
 	}
 
 	private void Reload()

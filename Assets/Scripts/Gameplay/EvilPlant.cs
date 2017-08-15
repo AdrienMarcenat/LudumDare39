@@ -8,7 +8,6 @@ public class EvilPlant : Enemy
 
 	protected void Start ()
 	{
-		base.Start ();
 		weapon = GetComponentInChildren<Weapon>();
 	}
 

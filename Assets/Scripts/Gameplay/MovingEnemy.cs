@@ -2,8 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreeperPlant : Enemy 
+public class MovingEnemy : Enemy 
 {
+	private MovingObject body;
+
+	void Start()
+	{
+		body = GetComponent<MovingObject> ();
+	}
+
 	void Update()
 	{
 		if (isSeeking)
@@ -15,6 +22,6 @@ public class CreeperPlant : Enemy
 		float horizontal = target.transform.position.x - transform.position.x;
 		float vertical   = target.transform.position.y - transform.position.y;
 
-		Move (horizontal, vertical);
+		body.Move (horizontal, vertical);
 	}
 }

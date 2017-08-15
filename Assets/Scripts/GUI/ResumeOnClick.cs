@@ -6,6 +6,6 @@ public class ResumeOnClick : MonoBehaviour
 {
 	public void Resume()
 	{
-		GameEventManager.PauseEvent ();
+		GameManager.PauseEvent ();
 	}
 }

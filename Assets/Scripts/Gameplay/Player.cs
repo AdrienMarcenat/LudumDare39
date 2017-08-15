@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;    
 
-public class Player : Character
+public class Player : MonoBehaviour
 {
 	[SerializeField] Vector3 weaponPosition;
 	[SerializeField] Vector3 weaponRotation;
@@ -10,28 +10,28 @@ public class Player : Character
 	[SerializeField] float blinkingRate;
 
 	private Weapon currentWeapon;
+	private SpriteRenderer sprite;
+	private PlayerEventManager playerEventManager;
+	private Health health;
+	private MovingObject body;
+	private Animator animator;
+
+	private float invulnerabilityFramesDelay;
 	private int currentWeaponIndex;
 	private List<GameObject> weapons;
 
-	private float invulnerabilityFramesDelay;
-	private SpriteRenderer sprite;
 
-	[HideInInspector] public PlayerEventManager playerEventManager;
-
-	protected void Awake()
+	protected void Awake ()
 	{
 		playerEventManager = GetComponent<PlayerEventManager> ();
-		characterEventManager = playerEventManager;
-	}
-
-	protected void Start ()
-	{
-		base.Start ();
+		health = GetComponent<Health>();
+		body = GetComponent<MovingObject> ();
 		sprite = GetComponent<SpriteRenderer> ();
 		currentWeapon = GetComponentInChildren<Weapon> ();
+		animator = GetComponent<Animator> ();
+			
 		weapons = new List<GameObject> ();
 		weapons.Add (currentWeapon.gameObject);
-		playerEventManager.UpdateUIEvent ();
 	}
 
 	void OnEnable()
@@ -42,8 +42,8 @@ public class Player : Character
 		playerEventManager.AmmoPack   += Reload;
 		playerEventManager.HealthPack += Heal;
 		playerEventManager.WeaponPick += WeaponPick;
-		playerEventManager.Damage     += Damage;
-		playerEventManager.GameOver   += GameOver;
+		health.SimpleDamage += Damage;
+		health.GameOver += GameOver;
 	}
 
 	void OnDisable()
@@ -54,13 +54,13 @@ public class Player : Character
 		playerEventManager.AmmoPack   -= Reload;
 		playerEventManager.HealthPack -= Heal;
 		playerEventManager.WeaponPick -= WeaponPick;
-		playerEventManager.Damage     -= Damage;
-		playerEventManager.GameOver   -= GameOver;
+		health.SimpleDamage -= Damage;
+		health.GameOver -= GameOver;
 	}
 
 	void MovePlayer (float x, float y)
 	{
-		Move (x, y);
+		body.Move (x, y);
 
 		if (x != 0 || y != 0)
 			animator.SetBool ("PlayerMove", true);
@@ -97,7 +97,7 @@ public class Player : Character
 
 	private void Heal()
 	{
-		currentHealth = totalHealth;
+		health.Heal ();
 	}
 
 	private void Reload()
@@ -128,19 +128,17 @@ public class Player : Character
 		SwitchGun (weapons.Count - 1);
 	}
 		
-	private void Damage(float damage, int weaponType)
+	private void Damage()
 	{
 		if (invulnerabilityFramesDelay > 0)
 			return;
-
-		LoseHealth (damage);
-		playerEventManager.LoseHealthEvent ();
-		CheckIfGameOver ();
+		
 		StartCoroutine (InvulnerabilityRoutine());
 	}
 		
 	IEnumerator InvulnerabilityRoutine()
 	{
+		health.Enable(false);
 		invulnerabilityFramesDelay = invulnerabilityFrames;
 		while (invulnerabilityFramesDelay > 0) 
 		{
@@ -149,6 +147,7 @@ public class Player : Character
 			yield return new WaitForSeconds (blinkingRate);
 		}
 		sprite.enabled = true;
+		health.Enable(true);
 	}
 
 	public Weapon GetCurrentWeapon()
@@ -158,6 +157,6 @@ public class Player : Character
 
 	private void GameOver()
 	{
-		GameEventManager.GameOverEvent();
+		GameManager.LoadScene (1);
 	}
 }

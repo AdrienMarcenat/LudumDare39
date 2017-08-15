@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class MovingObject : MonoBehaviour
+public class MovingObject : MonoBehaviour
 {     
-	protected BoxCollider2D boxCollider;      
-	protected Rigidbody2D rigidBody;
+	private BoxCollider2D boxCollider;      
+	private Rigidbody2D rigidBody;
 
 	[SerializeField] float smoothSpeed;
 
-	protected void Start ()
+	void Start ()
 	{
 		boxCollider = GetComponent <BoxCollider2D> ();
 		rigidBody = GetComponent <Rigidbody2D> ();
 	}
 
-	protected void Move (float xDir, float yDir)
+	public void Move (float xDir, float yDir)
 	{
 		rigidBody.velocity = smoothSpeed * (new Vector2 (xDir, yDir).normalized);
 	}

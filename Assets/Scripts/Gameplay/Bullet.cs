@@ -21,8 +21,8 @@ public class Bullet : MonoBehaviour
 	{
 		if (other.tag == targetTag) 
 		{
-			Character hitCharacter = other.GetComponent<Character> ();
-			hitCharacter.characterEventManager.DamageEvent (damage, weaponType);
+			Health targetHealth = other.GetComponent<Health> ();
+			targetHealth.LoseHealth (damage, weaponType);
 
 			Destroy (gameObject, penetration);
 		}

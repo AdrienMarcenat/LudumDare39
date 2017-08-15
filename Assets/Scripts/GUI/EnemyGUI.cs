@@ -4,29 +4,27 @@ using System.Collections;
 public class EnemyGUI : MonoBehaviour
 {
 	private Enemy enemy;
-	private EnemyEventManager enemyEventManager;
+	private Health health;
 
 	[SerializeField] SpriteRenderer healthBar;
 
 	void Awake()
 	{
 		enemy = GetComponent<Enemy> ();
-		enemyEventManager = GetComponent<EnemyEventManager> ();
+		health = GetComponent<Health> ();
 		healthBar.enabled = false;
 	}
 
 	void OnEnable()
 	{
-		enemyEventManager.EnemySeek  += HealthBarEnable;
-		enemyEventManager.UpdateUI   += UpdateUI;
-		enemyEventManager.LoseHealth += UpdateUI;
+		enemy.EnemySeek += HealthBarEnable;
+		health.SimpleDamage += UpdateUI;
 	}
 
 	void OnDisable()
 	{
-		enemyEventManager.EnemySeek  -= HealthBarEnable;
-		enemyEventManager.UpdateUI   -= UpdateUI;
-		enemyEventManager.LoseHealth -= UpdateUI;
+		enemy.EnemySeek -= HealthBarEnable;
+		health.SimpleDamage -= UpdateUI;
 	}
 
 	private void HealthBarEnable()
@@ -36,8 +34,8 @@ public class EnemyGUI : MonoBehaviour
 
 	private void UpdateUI()
 	{
-		float currentHealth = enemy.GetCurrentHealth ();
-		float totalHealth = enemy.GetTotalHealth ();
+		float currentHealth = health.GetCurrentHealth ();
+		float totalHealth = health.GetTotalHealth ();
 
 		Vector3 scale = healthBar.transform.localScale;
 		healthBar.transform.localScale = new Vector3 (currentHealth / totalHealth, scale.y, scale.z);

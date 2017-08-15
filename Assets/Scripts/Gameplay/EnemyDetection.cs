@@ -11,6 +11,7 @@ public class EnemyDetection : MonoBehaviour
 			Enemy enemy = GetComponentInParent<Enemy> ();
 			if(enemy != null)
 				enemy.Seek ();
+			this.enabled = false;
 		}
 	}
 }
