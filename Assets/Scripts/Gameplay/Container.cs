@@ -14,7 +14,8 @@ public class Container : MonoBehaviour
 		if (other.tag == "Bullet") 
 		{
 			float spawningTest = Random.Range (0f, 1f);
-			if (spawningTest < spawningProbability && spawnObjetcs.Length != 0) {
+			if (spawningTest < spawningProbability && spawnObjetcs.Length != 0) 
+			{
 				int randomIndex = Random.Range (0, spawnObjetcs.Length);
 				GameObject spwanObject = Instantiate (spawnObjetcs [randomIndex], transform);
 				spwanObject.transform.localPosition = spawningLocation;

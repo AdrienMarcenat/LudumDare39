@@ -23,6 +23,7 @@ public class SoundManager : Singleton<SoundManager>
 		{
 			instance.musicSource.clip = clip;
 			instance.musicSource.Play ();
+			instance.musicSource.loop = true;
 		}
 	}
 }
