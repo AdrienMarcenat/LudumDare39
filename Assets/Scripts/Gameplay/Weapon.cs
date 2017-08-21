@@ -64,7 +64,7 @@ public class Weapon : MonoBehaviour
 		GetComponent<SpriteRenderer> ().sprite = topDownSprite;
 	}
 
-	public int GetType()
+	new public int GetType()
 	{
 		return type;
 	}

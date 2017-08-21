@@ -28,10 +28,11 @@ public class FSM : MonoBehaviour
 	private Hashtable factories;
 
 
-	public FSM()
+	protected void Awake()
 	{
 		stateStack = new Stack<FSMState> ();
 		pendingList = new List<PendingChange> ();
+		factories = new Hashtable ();
 	}
 
 	public void RegisterState(int stateID, FSMState state)
@@ -83,10 +84,13 @@ public class FSM : MonoBehaviour
 			switch (change.action)
 			{
 			case Action.Push:
-				stateStack.Push(FindState(change.stateID));
+				FSMState pushState = FindState (change.stateID);
+				pushState.Enter ();
+				stateStack.Push(pushState);
 				break;
 			case Action.Pop:
-				stateStack.Pop ();
+				FSMState popState = stateStack.Pop ();
+				popState.Exit();
 				break;
 			case Action.Clear:
 				stateStack.Clear ();

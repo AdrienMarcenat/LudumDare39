@@ -23,7 +23,7 @@ public class PlayerSoundManager : MonoBehaviour
 		playerEventManager.AmmoPack   += Reload;
 		playerEventManager.HealthPack += Heal;
 		playerEventManager.WeaponPick += SwitchGun;
-		playerHealth.SimpleDamage += Damage;
+		playerHealth.SimpleDamage     += Damage;
 	}
 
 	void OnDisable()
@@ -32,7 +32,7 @@ public class PlayerSoundManager : MonoBehaviour
 		playerEventManager.AmmoPack   -= Reload;
 		playerEventManager.HealthPack -= Heal;
 		playerEventManager.WeaponPick -= SwitchGun;
-		playerHealth.SimpleDamage -= Damage;
+		playerHealth.SimpleDamage     -= Damage;
 	}
 
 	private void Reload()

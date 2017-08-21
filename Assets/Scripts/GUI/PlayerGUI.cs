@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerGUI : MonoBehaviour
 {
-	private Player player;
+	private WeaponManager weaponManager;
 	private Health playerHealth;
 	private PlayerEventManager playerEventManager;
 
@@ -14,8 +14,8 @@ public class PlayerGUI : MonoBehaviour
 
 	void Awake()
 	{
-		player = GetComponent<Player>();
-		playerHealth = GetComponent<Health> ();
+		weaponManager      = GetComponent<WeaponManager>();
+		playerHealth       = GetComponent<Health> ();
 		playerEventManager = GetComponent<PlayerEventManager> ();
 	}
 
@@ -41,7 +41,7 @@ public class PlayerGUI : MonoBehaviour
 		float currentHealth = playerHealth.GetCurrentHealth ();
 		float totalHealth = playerHealth.GetTotalHealth ();
 
-		Weapon currentWeapon = player.GetCurrentWeapon ();
+		Weapon currentWeapon = weaponManager.GetCurrentWeapon ();
 		ammoText.text = "x" + currentWeapon.GetAmmo();
 		weaponThumbnail.sprite = currentWeapon.GetThumbnail ();
 		healthBar.fillAmount = currentHealth / totalHealth;
