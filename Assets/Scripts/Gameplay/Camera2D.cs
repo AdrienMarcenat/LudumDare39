@@ -35,7 +35,7 @@ public class Camera2D : MonoBehaviour
 		
 	public void SetZoom(float zoomFactor)
 	{
-		if(GetComponent<Camera>() == null)
+		if(mainCamera == null)
 			mainCamera = GetComponent<Camera>();
 		this.zoomFactor = zoomFactor;
 		StartCoroutine (Zoom());
