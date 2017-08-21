@@ -12,7 +12,7 @@ namespace PlayerStates
 
 public class PlayerFSM : FSM
 {
-	protected void Awake()
+	protected override void Awake()
 	{
 		base.Awake ();
 		PushState ((int) PlayerStates.ID.Normal);

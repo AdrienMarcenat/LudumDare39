@@ -9,7 +9,7 @@ public class PlayerNormalState : FSMState
 	private MovingObject body;
 	private Animator animator;
 
-	protected void Awake()
+	protected override void Awake()
 	{
 		ID = (int)PlayerStates.ID.Normal;
 		base.Awake ();

@@ -9,7 +9,6 @@ public class Weapon : MonoBehaviour
 	[SerializeField] int currentAmmo;
 	[SerializeField] float ammoVelocity;
 	[SerializeField] float fireRate;
-	[SerializeField] string name;
 
 	[SerializeField] Sprite thumbnail;
 	[SerializeField] Sprite topDownSprite;
@@ -64,7 +63,7 @@ public class Weapon : MonoBehaviour
 		GetComponent<SpriteRenderer> ().sprite = topDownSprite;
 	}
 
-	new public int GetType()
+	public int GetWeaponType()
 	{
 		return type;
 	}

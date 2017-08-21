@@ -48,11 +48,11 @@ public class WeaponManager : MonoBehaviour
 
 	public void WeaponPick(GameObject newWeapon)
 	{
-		int weaponType = newWeapon.GetComponent<Weapon> ().GetType();
+		int weaponType = newWeapon.GetComponent<Weapon> ().GetWeaponType();
 
 		foreach (GameObject weapon in  weapons) 
 		{
-			if (weapon.GetComponent<Weapon> ().GetType() == weaponType) 
+			if (weapon.GetComponent<Weapon> ().GetWeaponType() == weaponType) 
 			{
 				Reload ();
 				Destroy (newWeapon);

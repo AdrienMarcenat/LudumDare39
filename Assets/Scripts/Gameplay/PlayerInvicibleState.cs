@@ -9,7 +9,7 @@ public class PlayerInvicibleState : FSMState
 	[SerializeField] float blinkingRate;
 	private float invulnerabilityFramesDelay;
 
-	protected void Awake()
+	protected override void Awake()
 	{
 		ID = (int)PlayerStates.ID.Invincible;
 		base.Awake ();

@@ -6,12 +6,12 @@ public abstract class FSMState : MonoBehaviour
 	protected FSM fsm;
 	protected int ID;
 
-	protected void Awake()
+	protected virtual void Awake()
 	{
 		fsm = GetComponent<FSM>();
 	}
 
-	protected void Start()
+	protected virtual void Start()
 	{
 		fsm.RegisterState (ID, this);
 	}

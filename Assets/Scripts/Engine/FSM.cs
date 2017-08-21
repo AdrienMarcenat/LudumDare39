@@ -28,7 +28,7 @@ public class FSM : MonoBehaviour
 	private Hashtable factories;
 
 
-	protected void Awake()
+	protected virtual void Awake()
 	{
 		stateStack = new Stack<FSMState> ();
 		pendingList = new List<PendingChange> ();

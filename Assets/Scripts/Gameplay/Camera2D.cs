@@ -9,12 +9,12 @@ public class Camera2D : MonoBehaviour
 	[SerializeField] float zoomSpeed  = 5.0f;
 	[SerializeField] Transform trackingTarget;
 
-	private Camera camera;
+	private Camera mainCamera;
 	private Transform player;
 
 	void Awake()
 	{
-		camera = GetComponent<Camera>();
+		mainCamera = GetComponent<Camera>();
 		player = GameObject.FindGameObjectWithTag ("Player").transform;
 		SetZoom(zoomFactor);
 	}
@@ -35,8 +35,8 @@ public class Camera2D : MonoBehaviour
 		
 	public void SetZoom(float zoomFactor)
 	{
-		if(camera == null)
-			camera = GetComponent<Camera>();
+		if(GetComponent<Camera>() == null)
+			mainCamera = GetComponent<Camera>();
 		this.zoomFactor = zoomFactor;
 		StartCoroutine (Zoom());
 	}
@@ -44,16 +44,16 @@ public class Camera2D : MonoBehaviour
 	IEnumerator Zoom()
 	{
 		float targetSize = zoomFactor;
-		if(targetSize < camera.orthographicSize)
-			while (targetSize < camera.orthographicSize)
+		if(targetSize < mainCamera.orthographicSize)
+			while (targetSize < GetComponent<Camera>().orthographicSize)
 			{
-				camera.orthographicSize -= Time.deltaTime * zoomSpeed;
+				mainCamera.orthographicSize -= Time.deltaTime * zoomSpeed;
 				yield return null;
 			}
 		else
-			while (targetSize > camera.orthographicSize)
+			while (targetSize > mainCamera.orthographicSize)
 			{
-				camera.orthographicSize += Time.deltaTime * zoomSpeed;
+				mainCamera.orthographicSize += Time.deltaTime * zoomSpeed;
 				yield return null;
 			}
 	}

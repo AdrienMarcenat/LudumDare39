@@ -6,16 +6,16 @@ public class RoomInfo : MonoBehaviour
 {
 	[SerializeField] float zoomFactor;
 	[SerializeField] Transform cameraNode;
-	private Camera2D camera;
+	private Camera2D mainCamera;
 
 	void Awake()
 	{
-		camera = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<Camera2D>();
+		mainCamera = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<Camera2D>();
 	}
 
 	void OnEnable()
 	{
-		camera.SetTrackingTarget(cameraNode);
-		camera.SetZoom (zoomFactor);
+		mainCamera.SetTrackingTarget(cameraNode);
+		mainCamera.SetZoom (zoomFactor);
 	}
 }
